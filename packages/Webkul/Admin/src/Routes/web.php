@@ -63,4 +63,9 @@ Route::group(['middleware' => ['admin', NoCacheMiddleware::class], 'prefix' => c
      * Remaining routes.
      */
     require 'rest-routes.php';
+
+    /**
+     * Blog routes.
+     */
+    require base_path('routes/admin.php');
 });

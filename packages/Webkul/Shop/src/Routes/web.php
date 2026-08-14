@@ -7,6 +7,11 @@
 require 'webmcp-routes.php';
 
 /**
+ * Blog frontend routes.
+ */
+require base_path('routes/frontend-blog.php');
+
+/**
  * Store front routes.
  */
 require 'store-front-routes.php';

@@ -183,6 +183,17 @@ return [
     ],
 
     /**
+     * Blog.
+     */
+    [
+        'key' => 'blog',
+        'name' => 'Blog',
+        'route' => 'admin.blogs.index',
+        'sort' => 6,
+        'icon' => 'icon-cms',
+    ],
+
+    /**
      * Marketing.
      */
     [
