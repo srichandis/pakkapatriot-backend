@@ -7,11 +7,6 @@
 require 'webmcp-routes.php';
 
 /**
- * Blog frontend routes.
- */
-require base_path('routes/frontend-blog.php');
-
-/**
  * Store front routes.
  */
 require 'store-front-routes.php';
@@ -27,3 +22,11 @@ require 'customer-routes.php';
  * cart, coupons, etc will be placed here.
  */
 require 'checkout-routes.php';
+
+/**
+ * Blog frontend routes.
+ *
+ * Declared last so the root-level post permalink route ({slug}) matches only
+ * URLs that no other shop/customer/checkout route handled.
+ */
+require base_path('routes/frontend-blog.php');

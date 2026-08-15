@@ -190,7 +190,29 @@ return [
         'name' => 'Blog',
         'route' => 'admin.blogs.index',
         'sort' => 6,
-        'icon' => 'icon-cms',
+        'icon' => 'icon-folder',
+    ],
+
+    /**
+     * People.
+     */
+    [
+        'key' => 'people',
+        'name' => 'People',
+        'route' => 'admin.people.index',
+        'sort' => 7,
+        'icon' => 'icon-customer-2',
+    ],
+
+    /**
+     * Journey (Join the Journey form submissions).
+     */
+    [
+        'key' => 'journey',
+        'name' => 'Journey',
+        'route' => 'admin.journey.index',
+        'sort' => 8,
+        'icon' => 'icon-mail',
     ],
 
     /**

@@ -125,7 +125,8 @@ class ProductApiController extends Controller
     }
 
     /**
-     * Get the first product image URL (relative path for Vite proxy).
+     * Get the absolute URL of the first product image so the cross-origin
+     * React frontend can display it.
      */
     protected function getProductImageUrl(int $productId): string
     {
@@ -136,8 +137,8 @@ class ProductApiController extends Controller
                 ->first();
 
             if ($image && $image->path) {
-                // Return relative path so it goes through the Vite /storage proxy
-                return '/storage/' . $image->path;
+                // Absolute URL — the React frontend lives on a different origin
+                return url('/storage/' . $image->path);
             }
         } catch (\Throwable $e) {
             // Fall through to default image
@@ -158,7 +159,7 @@ class ProductApiController extends Controller
                 ->pluck('path');
 
             return $images
-                ->map(fn ($path) => '/storage/' . $path)
+                ->map(fn ($path) => url('/storage/' . $path))
                 ->values()
                 ->all();
         } catch (\Throwable $e) {

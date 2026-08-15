@@ -42,3 +42,8 @@ skills-lock.json
 /vendor
 yarn.lock
 yarn-error.log
+
+# Local junk / accidental exports
+.DS_Store
+pp.sql
+vendor.zip

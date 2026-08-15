@@ -76,24 +76,21 @@ class BlogApiController extends Controller
             'category' => $category,
             'author_name' => $blog->author_name ?? 'Pakka Patriot',
             'read_time' => $blog->reading_time . ' min read',
-            'link' => url('/blog/' . $blog->slug),
+            'link' => url('/' . $blog->slug),
         ];
     }
 
     /**
-     * Get a proxy-friendly image URL for a blog post.
-     * Returns a relative path so the browser fetches through the Vite /storage proxy.
+     * Get the absolute image URL for a blog post so the cross-origin
+     * React frontend can display it (relative paths only resolve on
+     * the API origin, not on the deployed frontend host).
      */
     protected function getBlogImageUrl(Blog $blog): string
     {
         try {
             $media = $blog->getFirstMedia('featured_image');
             if ($media) {
-                // Use Spatie's URL and strip the host to make it relative through Vite proxy
-                $url = $media->getUrl();
-                $path = parse_url($url, PHP_URL_PATH);
-
-                return $path ?: $url;
+                return $media->getUrl();
             }
         } catch (\Throwable $e) {
             // Fall through
