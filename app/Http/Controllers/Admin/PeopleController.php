@@ -103,7 +103,7 @@ class PeopleController extends Controller
             'quote_source' => $validated['quote_source'] ?? null,
             'summary' => $validated['summary'] ?? null,
             'overview' => $this->linesToArray($request->input('overview')),
-            'core_ideas' => $this->linesToArray($request->input('core_ideas')),
+            'core_ideas' => $this->linesToArray($request->input('core_ideas'), true),
             'legacy' => $validated['legacy'] ?? null,
         ]);
 
@@ -153,7 +153,7 @@ class PeopleController extends Controller
             'quote_source' => $validated['quote_source'] ?? null,
             'summary' => $validated['summary'] ?? null,
             'overview' => $this->linesToArray($request->input('overview')),
-            'core_ideas' => $this->linesToArray($request->input('core_ideas')),
+            'core_ideas' => $this->linesToArray($request->input('core_ideas'), true),
             'legacy' => $validated['legacy'] ?? null,
         ]);
 
@@ -233,18 +233,34 @@ class PeopleController extends Controller
     }
 
     /**
-     * Split a textarea value into an array (one item per line).
+     * Split a textarea value into an array (one item per line). Lines in the
+     * "Title|Text" form become objects (used by core_ideas cards); plain lines
+     * stay strings.
      */
-    protected function linesToArray(?string $value): array
+    protected function linesToArray(?string $value, bool $objects = false): array
     {
         if ($value === null || trim($value) === '') {
             return [];
         }
 
-        return array_values(array_filter(
+        $items = array_values(array_filter(
             array_map('trim', preg_split('/\r\n|\r|\n/', $value)),
             fn ($line) => $line !== ''
         ));
+
+        if (! $objects) {
+            return $items;
+        }
+
+        return array_map(function (string $line) {
+            if (str_contains($line, '|')) {
+                [$title, $text] = array_map('trim', explode('|', $line, 2));
+
+                return ['title' => $title, 'text' => $text];
+            }
+
+            return ['title' => '', 'text' => $line];
+        }, $items);
     }
 
     /**

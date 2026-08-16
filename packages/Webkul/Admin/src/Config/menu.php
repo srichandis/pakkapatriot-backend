@@ -194,13 +194,68 @@ return [
     ],
 
     /**
+     * Ideas.
+     */
+    [
+        'key' => 'ideas',
+        'name' => 'Ideas',
+        'route' => 'admin.ideas.index',
+        'sort' => 7,
+        'icon' => 'icon-customer-2',
+    ],
+
+    /**
+     * Places.
+     */
+    [
+        'key' => 'places',
+        'name' => 'Places',
+        'route' => 'admin.places.index',
+        'sort' => 8,
+        'icon' => 'icon-customer-2',
+    ],
+
+    /**
+     * Culture.
+     */
+    [
+        'key' => 'culture',
+        'name' => 'Culture',
+        'route' => 'admin.culture.index',
+        'sort' => 9,
+        'icon' => 'icon-customer-2',
+    ],
+
+    /**
+     * Create.
+     */
+    [
+        'key' => 'create',
+        'name' => 'Create',
+        'route' => 'admin.create.index',
+        'sort' => 10,
+        'icon' => 'icon-customer-2',
+    ],
+
+    /**
      * People.
      */
     [
         'key' => 'people',
         'name' => 'People',
         'route' => 'admin.people.index',
-        'sort' => 7,
+        'sort' => 11,
+        'icon' => 'icon-customer-2',
+    ],
+
+    /**
+     * Games.
+     */
+    [
+        'key' => 'games',
+        'name' => 'Games',
+        'route' => 'admin.games.index',
+        'sort' => 12,
         'icon' => 'icon-customer-2',
     ],
 
@@ -211,7 +266,7 @@ return [
         'key' => 'journey',
         'name' => 'Journey',
         'route' => 'admin.journey.index',
-        'sort' => 8,
+        'sort' => 13,
         'icon' => 'icon-mail',
     ],
 
@@ -222,7 +277,7 @@ return [
         'key' => 'amazon-products',
         'name' => 'Amazon Products',
         'route' => 'admin.amazon-products.index',
-        'sort' => 9,
+        'sort' => 14,
         'icon' => 'icon-store',
     ],
 

@@ -2,7 +2,23 @@
 @php
     $item ??= null;
     $val = fn (string $field, $fallback = null) => old($field, $item?->{$field} ?? $fallback);
-    $arr = fn (string $field) => is_array($item?->{$field}) ? implode("\n", $item->{$field}) : $item?->{$field} ?? '';
+    // Render a JSON array field as textarea lines. Core ideas may be either
+    // plain strings or objects with {title, text} — objects render as "Title|Text".
+    $arr = function (string $field) use ($item) {
+        $value = $item?->{$field};
+        if (! is_array($value)) {
+            return $value ?? '';
+        }
+        $lines = [];
+        foreach ($value as $entry) {
+            if (is_array($entry)) {
+                $lines[] = trim(($entry['title'] ?? '') . '|' . ($entry['text'] ?? ''), '|');
+            } else {
+                $lines[] = (string) $entry;
+            }
+        }
+        return implode("\n", $lines);
+    };
 @endphp
 
 <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
@@ -324,7 +340,7 @@
                     name="core_ideas"
                     :value="$arr('core_ideas')"
                     :label="trans('Core ideas')"
-                    :placeholder="trans('Each line becomes a bullet point')"
+                    :placeholder="trans('Each line becomes a card. Use Title|Text for a titled card.')"
                     rows="6"
                 />
 

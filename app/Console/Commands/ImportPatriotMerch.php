@@ -26,33 +26,19 @@ class ImportPatriotMerch extends Command
      *
      * @var string
      */
-    protected $description = 'Clone the Pakka Patriot t-shirt designs into every merchandise category (hoodies, mugs, tote bags, posters, stickers, notebooks, caps)';
+    protected $description = 'Clone the Pakka Patriot t-shirt designs into every merchandise category (mugs, posters, stickers, notebooks, caps, photo frames)';
 
     /**
      * Merchandise category slug => product meta. The design artwork from the
      * t-shirts is reused as the product image for every category.
      */
     protected array $categories = [
-        'hoodies' => [
-            'noun' => 'Hoodie',
-            'price' => 899,
-            'weight' => 0.6,
-            'short_description' => 'Premium cotton-blend hoodie with {design} print.',
-            'description' => 'Wrap yourself in {design}. This premium cotton-blend hoodie carries the same iconic print as our best-selling tee — soft, warm, and made for the cool Bhārat evenings.',
-        ],
         'mugs' => [
             'noun' => 'Mug',
             'price' => 299,
             'weight' => 0.4,
             'short_description' => 'Ceramic mug with {design} print.',
             'description' => 'Start every morning with {design}. This 350 ml ceramic mug brings the iconic print from our best-selling tee to your desk — vivid, durable, and dishwasher-safe.',
-        ],
-        'tote-bags' => [
-            'noun' => 'Tote Bag',
-            'price' => 399,
-            'weight' => 0.25,
-            'short_description' => '100% cotton tote bag with {design} print.',
-            'description' => 'Carry {design} everywhere. This sturdy 100% cotton tote bag features the same iconic print as our best-selling tee — roomy, reusable, and proudly made in Bhārat.',
         ],
         'posters' => [
             'noun' => 'Poster',
@@ -67,6 +53,13 @@ class ImportPatriotMerch extends Command
             'weight' => 0.05,
             'short_description' => 'Waterproof vinyl sticker pack with {design} print.',
             'description' => 'Stick {design} on everything. This durable vinyl sticker pack reuses the iconic print from our best-selling tee — waterproof, scratch-resistant, and made in Bhārat.',
+        ],
+        'photo-frames' => [
+            'noun' => 'Photo Frame',
+            'price' => 499,
+            'weight' => 0.5,
+            'short_description' => 'Premium photo frame with {design} print.',
+            'description' => 'Frame {design} for your wall or desk. This premium photo frame carries the iconic print from our best-selling tee — a keepsake that celebrates the icons of Bhārat every day.',
         ],
         'notebooks' => [
             'noun' => 'Notebook',
