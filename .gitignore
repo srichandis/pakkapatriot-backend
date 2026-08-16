@@ -47,3 +47,7 @@ yarn-error.log
 .DS_Store
 pp.sql
 vendor.zip
+
+# Python
+__pycache__/
+*.pyc

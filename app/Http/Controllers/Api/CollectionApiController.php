@@ -75,6 +75,8 @@ class CollectionApiController extends Controller
             'era' => $i->era,
             'attribution' => $i->attribution,
             'region' => $i->region,
+            'latitude' => $i->latitude,
+            'longitude' => $i->longitude,
             'icon' => $i->icon,
             'accent' => $i->accent,
             'softAccent' => $i->soft_accent,

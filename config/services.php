@@ -35,6 +35,17 @@ return [
         ],
     ],
 
+    'amazon' => [
+        'affiliate_tag' => env('AMAZON_AFFILIATE_TAG', 'pakkapatriot05-21'),
+    ],
+
+    'razorpay' => [
+        'key' => env('RAZORPAY_KEY_ID'),
+        'secret' => env('RAZORPAY_KEY_SECRET'),
+        'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
+        'callback_url' => env('RAZORPAY_CALLBACK_URL'),
+    ],
+
     'exchange_api' => [
         'default' => 'exchange_rates',
 

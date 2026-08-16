@@ -216,6 +216,17 @@ return [
     ],
 
     /**
+     * Amazon affiliate products (Made in Bhārat store).
+     */
+    [
+        'key' => 'amazon-products',
+        'name' => 'Amazon Products',
+        'route' => 'admin.amazon-products.index',
+        'sort' => 9,
+        'icon' => 'icon-store',
+    ],
+
+    /**
      * Marketing.
      */
     [

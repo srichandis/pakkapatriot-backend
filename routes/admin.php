@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AmazonProductController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\JourneyController;
 use App\Http\Controllers\Admin\PeopleController;
@@ -37,6 +38,23 @@ Route::controller(PeopleController::class)->prefix('people')->group(function () 
     Route::put('edit/{id}', 'update')->name('admin.people.update');
 
     Route::delete('edit/{id}', 'destroy')->name('admin.people.destroy');
+});
+
+/**
+ * Amazon affiliate product routes.
+ */
+Route::controller(AmazonProductController::class)->prefix('amazon-products')->group(function () {
+    Route::get('/', 'index')->name('admin.amazon-products.index');
+
+    Route::get('create', 'create')->name('admin.amazon-products.create');
+
+    Route::post('create', 'store')->name('admin.amazon-products.store');
+
+    Route::get('edit/{id}', 'edit')->name('admin.amazon-products.edit');
+
+    Route::put('edit/{id}', 'update')->name('admin.amazon-products.update');
+
+    Route::delete('edit/{id}', 'destroy')->name('admin.amazon-products.destroy');
 });
 
 /**

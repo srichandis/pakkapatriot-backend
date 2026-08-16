@@ -14,8 +14,19 @@ class BlogApiController extends Controller
     public function index(): JsonResponse
     {
         $perPage = (int) request()->query('per_page', 12);
+        $search = request()->query('search');
 
-        $blogs = Blog::published()
+        $query = Blog::published();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%'.$search.'%')
+                  ->orWhere('excerpt', 'like', '%'.$search.'%')
+                  ->orWhere('author_name', 'like', '%'.$search.'%');
+            });
+        }
+
+        $blogs = $query
             ->orderBy('published_at', 'desc')
             ->paginate(min($perPage, 50));
 
