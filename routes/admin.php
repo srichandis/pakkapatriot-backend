@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CultureController;
 use App\Http\Controllers\Admin\GamesController;
 use App\Http\Controllers\Admin\IdeasController;
 use App\Http\Controllers\Admin\JourneyController;
+use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PlacesController;
 use Illuminate\Support\Facades\Route;
@@ -154,4 +155,13 @@ Route::controller(JourneyController::class)->prefix('journey')->group(function (
     Route::get('/', 'index')->name('admin.journey.index');
 
     Route::delete('{id}', 'destroy')->name('admin.journey.destroy');
+});
+
+/**
+ * Newsletter routes ("Let's stay in touch!" form subscriptions).
+ */
+Route::controller(NewsletterController::class)->prefix('newsletter')->group(function () {
+    Route::get('/', 'index')->name('admin.newsletter.index');
+
+    Route::delete('{id}', 'destroy')->name('admin.newsletter.destroy');
 });

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AmazonProductApiController;
 use App\Http\Controllers\Api\BlogApiController;
 use App\Http\Controllers\Api\CollectionApiController;
 use App\Http\Controllers\Api\JourneyApiController;
+use App\Http\Controllers\Api\NewsletterApiController;
 use App\Http\Controllers\Api\OrderApiController;
 use App\Http\Controllers\Api\PaymentApiController;
 use App\Http\Controllers\Api\ProductApiController;
@@ -36,5 +37,7 @@ Route::post('/payments/webhook', [PaymentApiController::class, 'webhook']);
 Route::get('/payments/status', [PaymentApiController::class, 'status']);
 
 Route::post('/join-journey', [JourneyApiController::class, 'store']);
+
+Route::post('/newsletter/subscribe', [NewsletterApiController::class, 'store']);
 
 Route::get('/data', [CollectionApiController::class, 'data']);

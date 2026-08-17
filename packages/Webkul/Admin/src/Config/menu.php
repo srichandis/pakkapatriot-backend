@@ -271,13 +271,24 @@ return [
     ],
 
     /**
+     * Newsletter ("Let's stay in touch!" form subscriptions).
+     */
+    [
+        'key' => 'newsletter',
+        'name' => 'Newsletter',
+        'route' => 'admin.newsletter.index',
+        'sort' => 14,
+        'icon' => 'icon-mail',
+    ],
+
+    /**
      * Amazon affiliate products (Made in Bhārat store).
      */
     [
         'key' => 'amazon-products',
         'name' => 'Amazon Products',
         'route' => 'admin.amazon-products.index',
-        'sort' => 14,
+        'sort' => 15,
         'icon' => 'icon-store',
     ],
 
