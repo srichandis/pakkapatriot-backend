@@ -7,6 +7,14 @@
         <p class="text-xl font-bold text-gray-800 dark:text-white">
             @lang('Newsletter — Subscriptions')
         </p>
+
+        <a
+            href="{{ route('admin.newsletter.compose') }}"
+            class="primary-button"
+        >
+            <span class="icon-send text-sm"></span>
+            @lang('Compose Newsletter')
+        </a>
     </div>
 
     {!! view_render_event('bagisto.admin.newsletter.list.before') !!}

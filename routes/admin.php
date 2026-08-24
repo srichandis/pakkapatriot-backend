@@ -163,5 +163,9 @@ Route::controller(JourneyController::class)->prefix('journey')->group(function (
 Route::controller(NewsletterController::class)->prefix('newsletter')->group(function () {
     Route::get('/', 'index')->name('admin.newsletter.index');
 
+    Route::get('compose', 'compose')->name('admin.newsletter.compose');
+
+    Route::post('send', 'send')->name('admin.newsletter.send');
+
     Route::delete('{id}', 'destroy')->name('admin.newsletter.destroy');
 });
