@@ -4,6 +4,13 @@ use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 
 /**
+ * Pakka Patriot page routes (home, collections, games, …). Required here —
+ * above the `{slug}` permalink below — so their single-segment paths are
+ * matched before this file's catch-all. See routes/frontend-pages.php.
+ */
+require base_path('routes/frontend-pages.php');
+
+/**
  * Blog frontend routes.
  *
  * Declared after the store-front/customer/checkout routes (see

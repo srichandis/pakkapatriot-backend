@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ஆடு புலி ஆட்டம் · Aadu Puli Aatam — Goats &amp; Tigers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Marcellus&family=Noto+Sans+Tamil:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — the deep forest of Tamil Nadu
+============================================================ */
+:root {
+  --gold: #d4af37;
+  --gold-bright: #f2d68a;
+  --gold-deep: #9c7a1e;
+  --bg-1: #0c2419;
+  --bg-2: #061410;
+  --fern: #2f7a4d;
+  --fern-light: #5fae7f;
+  --panel: rgba(12, 30, 20, 0.88);
+  --panel-border: rgba(212, 175, 55, 0.45);
+  --text: #f3e9d2;
+  --text-dim: #a9c0a8;
+  --tiger: #e8862e;
+  --tiger-dark: #7a3b12;
+  --goat: #f5ecd4;
+  --goat-dark: #8a7a55;
+  --shadow: 0 18px 50px rgba(0,0,0,.55);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Marcellus', Georgia, 'Times New Roman', serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(47, 122, 77, 0.25), transparent 60%),
+    radial-gradient(900px 600px at 90% 110%, rgba(150, 90, 30, 0.16), transparent 55%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-2) 70%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* faint leaf-pattern overlay */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%238fcaa0' stroke-width='1.4'%3E%3Cpath d='M100 30c14 22 22 46 22 70s-8 48-22 70c-14-22-22-46-22-70s8-48 22-70z'/%3E%3Cpath d='M100 52l-6-12M100 52l6-12M100 90l-10-8M100 90l10-8M100 128l-8-9M100 128l8-9'/%3E%3Ccircle cx='100' cy='100' r='86'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+::selection { background: rgba(212,175,55,.35); }
+
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+/* ============================================================
+   HEADER
+============================================================ */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  padding: 18px 26px 8px;
+  max-width: 1360px; margin: 0 auto;
+}
+.brand { display: flex; align-items: baseline; gap: 14px; }
+.brand h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700; letter-spacing: 1px;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 55%, var(--gold-deep));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 18px rgba(212,175,55,.25);
+}
+.brand .deva { font-family: 'Noto Sans Tamil', sans-serif; font-size: 20px; color: var(--gold); opacity: .92; }
+.brand .sub { font-size: 12px; letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase; }
+header .actions { display: flex; gap: 10px; }
+
+.btn {
+  position: relative;
+  border: 1px solid rgba(212,175,55,.55);
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 14px; letter-spacing: .5px;
+  color: #2b1d05;
+  background: linear-gradient(180deg, #f7e2a0, #e0b64a 45%, #c99f2e);
+  box-shadow: 0 2px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  overflow: hidden;
+}
+.btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); box-shadow: 0 0 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.4); }
+.btn:disabled { filter: grayscale(.7) brightness(.7); cursor: not-allowed; transform: none; }
+.btn::after {
+  content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,.55), transparent);
+  transition: left .5s ease;
+}
+.btn:hover::after { left: 130%; }
+
+.btn.ghost {
+  background: transparent; color: var(--gold-bright);
+  border-color: rgba(212,175,55,.4);
+  box-shadow: none;
+}
+.btn.ghost:hover { background: rgba(212,175,55,.08); }
+
+/* ============================================================
+   SETUP SCREEN
+============================================================ */
+.screen { display: none; }
+.screen.active { display: block; }
+
+#setupScreen {
+  max-width: 760px; margin: 26px auto 60px; padding: 0 20px;
+  animation: fadeUp .6s ease both;
+}
+.setup-card {
+  position: relative;
+  background: linear-gradient(170deg, rgba(18,40,26,.92), rgba(8,20,14,.94));
+  border: 1px solid var(--panel-border);
+  border-radius: 22px;
+  padding: 40px 44px 46px;
+  box-shadow: var(--shadow), inset 0 0 60px rgba(212,175,55,.05);
+}
+.setup-card::before, .setup-card::after {
+  content: ""; position: absolute; width: 44px; height: 44px;
+  border: 2px solid var(--gold); opacity: .7; pointer-events: none;
+}
+.setup-card::before { top: 12px; left: 12px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+.setup-card::after { bottom: 12px; right: 12px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
+
+.setup-card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  text-align: center; font-size: clamp(24px, 3.4vw, 34px);
+  color: var(--gold-bright); letter-spacing: 1px; margin-bottom: 6px;
+}
+.setup-card .tagline { text-align: center; color: var(--text-dim); font-size: 14px; letter-spacing: .6px; margin-bottom: 30px; }
+
+.setup-section { margin-bottom: 26px; }
+.setup-label {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
+}
+.setup-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(212,175,55,.4), transparent); }
+
+.player-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.player-opt {
+  flex: 1; min-width: 150px; padding: 14px 10px; text-align: center; border-radius: 12px;
+  border: 1px solid rgba(212,175,55,.3); background: rgba(255,255,255,.03);
+  cursor: pointer; color: var(--text); font-size: 15px; transition: all .15s ease;
+}
+.player-opt:hover { border-color: rgba(212,175,55,.6); transform: translateY(-2px); }
+.player-opt.selected {
+  border-color: var(--gold); background: linear-gradient(160deg, rgba(212,175,55,.16), rgba(212,175,55,.05));
+  box-shadow: 0 0 18px rgba(212,175,55,.15);
+}
+.player-opt .emoji { font-size: 26px; display: block; margin-bottom: 6px; }
+.player-opt small { display: block; color: var(--text-dim); font-size: 11px; margin-top: 3px; }
+
+/* board preview */
+.preview-wrap { display: flex; justify-content: center; }
+.board-preview {
+  width: 240px; height: 240px; border-radius: 18px;
+  border: 1px solid rgba(212,175,55,.35);
+  background: linear-gradient(165deg, #fbf7ea, #efe6cf);
+  padding: 14px; box-shadow: inset 0 2px 12px rgba(0,0,0,.18);
+}
+
+#startBtn { display: block; margin: 30px auto 0; font-size: 17px; padding: 14px 44px; border-radius: 12px; letter-spacing: 1.5px; }
+
+/* ============================================================
+   GAME SCREEN
+============================================================ */
+#gameScreen { max-width: 1240px; margin: 0 auto; padding: 10px 20px 40px; }
+.game-wrap { display: flex; gap: 22px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+
+/* ---- board ---- */
+#boardWrap {
+  position: relative; flex: 1 1 560px; max-width: 700px;
+  display: flex; justify-content: center;
+}
+#boardSvg {
+  width: 100%; height: auto;
+  filter: drop-shadow(0 22px 40px rgba(0,0,0,.5));
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+#boardSvg .pt { cursor: pointer; }
+#boardSvg .pt.passive { cursor: default; }
+
+@keyframes pulseRing {
+  0%, 100% { opacity: .95; }
+  50% { opacity: .3; }
+}
+.target-ring { animation: pulseRing 1.05s ease-in-out infinite; }
+@keyframes tigerPulse { 0%,100% { filter: drop-shadow(0 0 0 rgba(232,134,46,0)); } 50% { filter: drop-shadow(0 0 7px rgba(232,134,46,.9)); } }
+.tiger-selectable .tiger-body { animation: tigerPulse 1.1s ease-in-out infinite; }
+
+/* Critical: SVG transform animations must be relative to each piece, not the
+   whole viewBox. Without this, scale()/translate() on .piece jump pieces off
+   the board (default reference box is the 100x100 viewBox). */
+.piece { transform-box: fill-box; transform-origin: center; }
+
+@keyframes popIn {
+  0% { transform: scale(.2); opacity: 0; }
+  70% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.piece.pop { animation: popIn .35s cubic-bezier(.34,1.56,.64,1) both; }
+
+@keyframes flyEat {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  35% { transform: translate(26%, -30%) scale(1.15) rotate(18deg); opacity: .9; }
+  100% { transform: translate(60%, -70%) scale(.2) rotate(120deg); opacity: 0; }
+}
+.goat.eaten { animation: flyEat .55s ease-in forwards; }
+
+@keyframes hitFlash { 0% { filter: brightness(2.3); } 100% { filter: brightness(1); } }
+.pt.hit { animation: hitFlash .5s ease both; }
+
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.shake { animation: shakeX .4s ease; }
+
+/* ---- side panel ---- */
+#panel { flex: 0 1 380px; width: 380px; max-width: 100%; display: flex; flex-direction: column; gap: 14px; }
+
+.card {
+  background: linear-gradient(165deg, rgba(16,38,24,.92), rgba(8,18,12,.94));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4), inset 0 0 40px rgba(212,175,55,.04);
+  padding: 16px 18px;
+}
+
+/* turn banner */
+#turnBanner {
+  display: flex; align-items: center; gap: 12px;
+  border-left: 3px solid var(--gold);
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(212,175,55,.07);
+}
+#turnBanner .chip { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.2); }
+#turnBanner .t-name { font-size: 16px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; letter-spacing: .4px; }
+#turnBanner .t-sub { font-size: 12px; color: var(--text-dim); letter-spacing: .5px; }
+
+/* status cards */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-card { border-radius: 12px; padding: 12px 14px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); text-align: center; }
+.stat-card .s-val { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 700; color: var(--gold-bright); line-height: 1.1; }
+.stat-card .s-lbl { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-top: 3px; }
+.stat-card.tiger-s { border-color: rgba(232,134,46,.35); }
+.stat-card.goat-s { border-color: rgba(245,236,212,.25); }
+.stat-card .s-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.1); margin-top: 8px; overflow: hidden; }
+.stat-card .s-bar > i { display: block; height: 100%; border-radius: 3px; transition: width .4s ease; }
+
+/* player cards */
+.player-card { border-radius: 12px; padding: 11px 14px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025); transition: border-color .2s ease, box-shadow .2s ease; }
+.player-card.active { border-color: var(--gold); box-shadow: 0 0 18px rgba(212,175,55,.18); }
+.player-card .p-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.player-card .p-emoji { font-size: 19px; }
+.player-card .p-name { font-size: 14.5px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; flex: 1; }
+.player-card .p-sub { font-size: 11px; color: var(--text-dim); letter-spacing: .4px; }
+
+/* log */
+#log { max-height: 140px; overflow-y: auto; font-size: 12.5px; line-height: 1.65; color: var(--text-dim); }
+#log .lg { padding: 2px 0; border-bottom: 1px dashed rgba(212,175,55,.12); }
+#log .lg b { font-weight: 700; }
+#log::-webkit-scrollbar { width: 6px; }
+#log::-webkit-scrollbar-thumb { background: rgba(212,175,55,.3); border-radius: 3px; }
+
+/* rules toggle */
+#rulesPanel .rules-body { display: none; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+#rulesPanel.open .rules-body { display: block; margin-top: 10px; }
+.rules-toggle { background: none; border: none; color: var(--gold-bright); font-size: 13.5px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; }
+.rules-toggle .caret { transition: transform .2s ease; display: inline-block; }
+#rulesPanel.open .caret { transform: rotate(90deg); }
+.rules-body ul { padding-left: 18px; }
+.rules-body li { margin-bottom: 5px; }
+.rules-body b { color: var(--text); }
+
+/* hint bar */
+#hintBar {
+  font-size: 12.5px; color: var(--text-dim); line-height: 1.5;
+  padding: 9px 12px; border-radius: 10px;
+  border: 1px dashed rgba(212,175,55,.35); background: rgba(212,175,55,.05);
+}
+
+/* toast */
+#toast {
+  position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 20px);
+  z-index: 50; opacity: 0; pointer-events: none;
+  padding: 12px 22px; border-radius: 12px; font-size: 14px;
+  background: rgba(10,24,16,.96); border: 1px solid var(--gold);
+  color: var(--gold-bright); box-shadow: var(--shadow);
+  transition: opacity .25s ease, transform .25s ease; max-width: 90vw; text-align: center;
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* win overlay */
+#winOverlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(4,12,8,.82); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+#winOverlay.show { display: flex; }
+.win-box {
+  text-align: center; padding: 46px 54px; border-radius: 24px;
+  background: linear-gradient(170deg, rgba(22,46,30,.97), rgba(8,18,12,.97));
+  border: 1px solid var(--gold); box-shadow: var(--shadow), 0 0 80px rgba(212,175,55,.15);
+  animation: fadeUp .5s ease both; max-width: 500px;
+}
+.win-box .w-crown { font-size: 48px; margin-bottom: 8px; }
+.win-box h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 34px; color: var(--gold-bright); margin-bottom: 6px; }
+.win-box .w-name { font-size: 18px; color: var(--text); margin-bottom: 18px; line-height: 1.6; }
+.win-box .w-name b { color: var(--gold-bright); }
+.win-box .win-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* confetti */
+.confetti {
+  position: fixed; top: -20px; z-index: 101; pointer-events: none;
+  width: 10px; height: 14px; opacity: .9;
+  animation: confFall linear forwards;
+}
+@keyframes confFall { to { transform: translateY(110vh) rotate(720deg); opacity: .2; } }
+
+/* network room chip + panel rows */
+#roomChip {
+  font-size: 12px; letter-spacing: .5px; color: var(--gold-bright);
+  border: 1px solid rgba(212,175,55,.45); border-radius: 999px;
+  padding: 7px 14px; background: rgba(212,175,55,.07); align-self: center;
+  white-space: nowrap;
+}
+#netStatus { font-size: 12.5px; }
+.opt-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(212,175,55,.18); flex-wrap: wrap; }
+
+/* responsive */
+@media (max-width: 900px) {
+  #panel { flex: 1 1 100%; width: 100%; max-width: 640px; }
+  .game-wrap { align-items: center; }
+  #setupScreen .setup-card { padding: 26px 20px 30px; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="deva">ஆடு புலி ஆட்டம்</span>
+    <div>
+      <h1>Aadu Puli Aatam</h1>
+      <div class="sub">Goats &amp; Tigers · The Ancient Hunt of Tamil Nadu</div>
+    </div>
+  </div>
+  <div class="actions">
+    <span id="roomChip" style="display:none"></span>
+    <button class="btn ghost" id="soundBtn" title="Toggle sound">🔔 Sound</button>
+    <button class="btn ghost" id="newGameBtn" style="display:none">✦ New Game</button>
+  </div>
+</header>
+
+<!-- ================= SETUP ================= -->
+<section id="setupScreen" class="screen active">
+  <div class="setup-card">
+    <h2>Choose Your Side</h2>
+    <p class="tagline">Three tigers hunt fifteen goats upon the temple board of Tamil Nadu</p>
+
+    <div class="setup-section">
+      <div class="setup-label">Mode</div>
+      <div class="player-row">
+        <button class="player-opt" id="modeGoats"><span class="emoji">🐐</span>Play as Goats<small>You place 15 goats against the tiger's hunt</small></button>
+        <button class="player-opt" id="modeTigers"><span class="emoji">🐅</span>Play as Tigers<small>Hunt 5 goats to win — the computer places goats</small></button>
+        <button class="player-opt" id="modeLocal"><span class="emoji">🏠</span>Two Players<small>Hot-seat on this device</small></button>
+        <button class="player-opt" id="modeOnline"><span class="emoji">🌐</span>Online Room<small>Challenge a friend over the network</small></button>
+      </div>
+    </div>
+
+    <div id="netPanel" style="display:none">
+      <div class="setup-section">
+        <div class="setup-label">Network</div>
+        <div class="opt-row" style="margin-bottom:10px">
+          <label for="netName" style="min-width:90px">Your name</label>
+          <input id="netName" maxlength="16" placeholder="e.g. Kanni" style="flex:1;padding:9px 12px;border-radius:9px;border:1px solid rgba(212,175,55,.3);background:rgba(6,18,12,.6);color:var(--text);font-size:14px">
+        </div>
+        <div class="opt-row" style="gap:10px;flex-wrap:wrap">
+          <button class="btn" id="netHostBtn">🛡 Create Room</button>
+          <input id="netCode" maxlength="4" placeholder="CODE" style="flex:0 0 110px;text-align:center;letter-spacing:6px;text-transform:uppercase;padding:9px 6px;border-radius:9px;border:1px solid rgba(212,175,55,.3);background:rgba(6,18,12,.6);color:var(--gold-bright);font-weight:700;font-size:15px">
+          <button class="btn ghost" id="netJoinBtn">🔑 Join Room</button>
+        </div>
+        <div id="netStatus" style="margin-top:10px"></div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--text-dim);line-height:1.5">
+          Create a room to play the side you selected above (🐐 or 🐅) — a friend joins with your 4-letter code and takes the other side.
+        </div>
+      </div>
+      <div class="setup-section" id="netLobby" style="display:none">
+        <div class="setup-label">Lobby</div>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-radius:12px;background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.35)">
+          <div>
+            <div style="font-size:11px;letter-spacing:3px;color:var(--text-dim)">ROOM CODE</div>
+            <div id="lobbyCode" style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--gold-bright);letter-spacing:8px"></div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div id="lobbyHint" style="font-size:13px;color:var(--text-dim);margin-bottom:8px"></div>
+            <div id="lobbyPlayers" style="font-size:13.5px;line-height:1.9"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn" id="netStartBtn" style="display:none">⚔ Start the Hunt</button>
+          <button class="btn ghost" id="netLeaveBtn">✕ Leave Room</button>
+        </div>
+        <div id="lobbyShare" style="margin-top:10px;font-size:12px;color:var(--text-dim);word-break:break-all"></div>
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <div class="setup-label">The Board</div>
+      <div class="preview-wrap">
+        <svg class="board-preview" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="4" y="4" width="92" height="92" rx="10" fill="#fdf9ee" stroke="#8a7a55" stroke-width="1.6"/>
+          <g stroke="#5a4a2f" stroke-width="0.9" fill="none">
+            <line x1="50" y1="6" x2="22" y2="86"/><line x1="50" y1="6" x2="38" y2="86"/>
+            <line x1="50" y1="6" x2="62" y2="86"/><line x1="50" y1="6" x2="78" y2="86"/>
+            <line x1="10" y1="26" x2="90" y2="26"/><line x1="10" y1="46" x2="90" y2="46"/>
+            <line x1="10" y1="66" x2="90" y2="66"/><line x1="22" y1="86" x2="78" y2="86"/>
+            <line x1="10" y1="26" x2="10" y2="66"/><line x1="90" y1="26" x2="90" y2="66"/>
+          </g>
+          <g fill="#e8862e" stroke="#7a3b12" stroke-width="0.8">
+            <circle cx="50" cy="6" r="4.4"/><circle cx="47" cy="26" r="4.4"/><circle cx="53" cy="26" r="4.4"/>
+          </g>
+          <g fill="#f5ecd4" stroke="#8a7a55" stroke-width="0.7">
+            <circle cx="10" cy="26" r="3"/><circle cx="43" cy="26" r="3"/><circle cx="57" cy="26" r="3"/>
+            <circle cx="90" cy="26" r="3"/><circle cx="10" cy="46" r="3"/><circle cx="36" cy="46" r="3"/>
+            <circle cx="44" cy="46" r="3"/><circle cx="56" cy="46" r="3"/><circle cx="64" cy="46" r="3"/>
+            <circle cx="90" cy="46" r="3"/><circle cx="10" cy="66" r="3"/><circle cx="29" cy="66" r="3"/>
+            <circle cx="41" cy="66" r="3"/><circle cx="59" cy="66" r="3"/><circle cx="71" cy="66" r="3"/>
+            <circle cx="90" cy="66" r="3"/><circle cx="22" cy="86" r="3"/><circle cx="38" cy="86" r="3"/>
+            <circle cx="62" cy="86" r="3"/><circle cx="78" cy="86" r="3"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <button class="btn" id="startBtn">⚔ &nbsp;Begin the Hunt</button>
+  </div>
+</section>
+
+<!-- ================= GAME ================= -->
+<section id="gameScreen" class="screen">
+  <div class="game-wrap">
+    <div id="boardWrap">
+      <svg id="boardSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <aside id="panel">
+      <div class="card" id="turnBanner">
+        <div class="chip" id="turnChip">🐐</div>
+        <div>
+          <div class="t-name" id="turnName"></div>
+          <div class="t-sub" id="turnSub">The goats move first</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stat-grid">
+          <div class="stat-card tiger-s">
+            <div class="s-val" id="statCaptures">0</div>
+            <div class="s-lbl">🐅 Captures</div>
+            <div class="s-bar"><i id="barCaptures" style="width:0%;background:linear-gradient(90deg,#e8862e,#ffb35c)"></i></div>
+          </div>
+          <div class="stat-card goat-s">
+            <div class="s-val" id="statGoats">15</div>
+            <div class="s-lbl">🐐 Goats left</div>
+            <div class="s-bar"><i id="barGoats" style="width:100%;background:linear-gradient(90deg,#cfc09a,#f5ecd4)"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="playerCards"></div>
+
+      <div class="card" id="hintCard">
+        <div class="label setup-label" style="margin-bottom:6px">Hint</div>
+        <div id="hintBar">The goats move first — place one goat on any empty point.</div>
+      </div>
+
+      <div class="card">
+        <div class="label setup-label" style="margin-bottom:6px">Chronicle</div>
+        <div id="log"></div>
+      </div>
+
+      <div class="card" id="rulesPanel">
+        <button class="rules-toggle" id="rulesToggle"><span class="caret">▶</span> How to play</button>
+        <div class="rules-body">
+          <ul>
+            <li><b>3 tigers</b> start on the apex triangle; <b>15 goats</b> start off the board.</li>
+            <li>The <b>goat player moves first</b>, placing one goat per turn on any empty point until all 15 are placed.</li>
+            <li>Once placed, a goat <b>moves one step</b> along a line each turn.</li>
+            <li>A tiger moves to an adjacent empty point, <b>or captures</b> by jumping over an adjacent goat to the empty point straight beyond it — the eaten goat leaves the board.</li>
+            <li>⚠️ A goat placed or moved into a tiger's jaws <b>is eaten immediately</b>.</li>
+            <li><b>Tigers win</b> by capturing 5 goats. <b>Goats win</b> by surrounding the tigers so none can move.</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div id="toast"></div>
+
+<div id="winOverlay">
+  <div class="win-box">
+    <div class="w-crown" id="winCrown">🐅</div>
+    <h2 id="winTitle">Victory!</h2>
+    <div class="w-name" id="winName"></div>
+    <div class="win-btns">
+      <button class="btn" id="playAgainBtn">Play Again</button>
+      <button class="btn ghost" id="toSetupBtn">New Setup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= RULES ENGINE ================= -->
+<script src="engine.js"></script>
+
+<!-- ================= UI ================= -->
+<script>
+(function () {
+  'use strict';
+  const R = AaduPuliRules;
+
+  /* ---------- state ---------- */
+  let state = null;
+  let ui = {
+    busy: false,          // animation / AI turn in progress
+    sel: null,            // selected piece point (for moving goats / tigers)
+    targets: []           // currently highlighted legal destination points
+  };
+  let mode = 'goats';     // 'goats' | 'tigers' | 'local' | 'online'
+  let net = { mode: 'local', ws: null, room: null, seat: -1, host: false, name: '', players: [], started: false, winShown: false, pending: null, mySide: null };
+  let soundOn = true;
+  try { soundOn = localStorage.getItem('ap-sound') !== '0'; } catch (e) {}
+
+  /* ---------- DOM ---------- */
+  const $ = id => document.getElementById(id);
+  const boardSvg = $('boardSvg');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  /* ================= SOUND (WebAudio) ================= */
+  let actx = null;
+  function ac() { if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (actx && actx.state === 'suspended') actx.resume(); return actx; }
+  function beep(freq, dur, type, gain, when, slideTo) {
+    if (!soundOn) return;
+    const c = ac(); if (!c) return;
+    const t0 = c.currentTime + (when || 0);
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t0);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain || 0.12, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  function sfxPlace() { beep(420, 0.1, 'triangle', 0.1); beep(560, 0.1, 'triangle', 0.08, 0.07); }
+  function sfxMove() { beep(300, 0.07, 'triangle', 0.1); }
+  function sfxCapture() { beep(180, 0.16, 'square', 0.13, 0, 80); beep(70, 0.22, 'sawtooth', 0.1, 0.02); }
+  function sfxWin() { [523, 659, 784, 1047, 1319].forEach((f, i) => beep(f, 0.2, 'triangle', 0.12, i * 0.12)); }
+  function sfxLose() { [392, 330, 262, 196].forEach((f, i) => beep(f, 0.2, 'triangle', 0.11, i * 0.12)); }
+  function sfxDeny() { beep(140, 0.2, 'sawtooth', 0.1, 0, 110); }
+
+  /* ================= SETUP ================= */
+  const modeBtns = { goats: $('modeGoats'), tigers: $('modeTigers'), local: $('modeLocal'), online: $('modeOnline') };
+  function setMode(k) {
+    mode = k;
+    Object.keys(modeBtns).forEach(x => modeBtns[x].classList.toggle('selected', x === k));
+    const online = k === 'online';
+    $('netPanel').style.display = online ? '' : 'none';
+    $('startBtn').style.display = online ? 'none' : '';
+    if (online) netConnect();
+  }
+  Object.keys(modeBtns).forEach(k => modeBtns[k].addEventListener('click', () => setMode(k)));
+  modeBtns.goats.classList.add('selected');
+
+  $('startBtn').addEventListener('click', () => {
+    if (net.mode === 'online') return;   // online games start from the lobby
+    startGame();
+  });
+  $('newGameBtn').addEventListener('click', () => { $('winOverlay').classList.remove('show'); if (net.mode === 'online') { netLeave(); return; } toSetup(); });
+  $('playAgainBtn').addEventListener('click', () => {
+    $('winOverlay').classList.remove('show');
+    if (net.mode === 'online') {
+      if (net.host) netSend({ type: 'rematch' });
+      else toast('Only the host can start a rematch', 3200);
+      return;
+    }
+    startGame();
+  });
+  $('toSetupBtn').addEventListener('click', () => { $('winOverlay').classList.remove('show'); if (net.mode === 'online') { netLeave(); return; } toSetup(); });
+  function toSetup() { $('gameScreen').classList.remove('active'); $('setupScreen').classList.add('active'); $('newGameBtn').style.display = 'none'; }
+
+  $('soundBtn').addEventListener('click', () => {
+    soundOn = !soundOn;
+    try { localStorage.setItem('ap-sound', soundOn ? '1' : '0'); } catch (e) {}
+    $('soundBtn').textContent = soundOn ? '🔔 Sound' : '🔕 Muted';
+  });
+  $('soundBtn').textContent = soundOn ? '🔔 Sound' : '🔕 Muted';
+  $('rulesToggle').addEventListener('click', () => $('rulesPanel').classList.toggle('open'));
+
+  /* ================= ONLINE (NETWORK) ================= */
+  function escapeHtml(str) { return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function netStatus(t) { const el = $('netStatus'); if (el) el.textContent = t; }
+  function netConnect() {
+    if (net.ws && (net.ws.readyState === 0 || net.ws.readyState === 1)) return;
+    const proto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+    // The embedding page (pakkapatriot) points us at a game server via
+    // ?server=ws://host:port (pairs with ?room= for auto-join). Falls back
+    // to the same host that serves this page.
+    let server = '';
+    try { server = new URLSearchParams(location.search).get('server') || ''; } catch (e) {}
+    try {
+      net.ws = new WebSocket(server || (proto + location.host));
+    } catch (e) { netStatus('Could not connect — start the game server first'); return; }
+    net.ws.onopen = () => {
+      netStatus('● Connected');
+      if (net.pending) { netSend(net.pending); net.pending = null; }
+      else if (net.room) netSend({ type: 'rejoin', code: net.room, name: net.name });
+    };
+    net.ws.onmessage = ev => {
+      let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+      netOnMessage(m);
+    };
+    net.ws.onclose = () => {
+      net.ws = null;
+      if (net.room && net.started) { netStatus('○ Disconnected — reconnecting…'); setTimeout(netConnect, 1500); }
+      else netStatus('○ Disconnected');
+    };
+    net.ws.onerror = () => {};
+  }
+  function netSend(o) {
+    if (net.ws && net.ws.readyState === 1) { net.ws.send(JSON.stringify(o)); return; }
+    // not open yet — queue the message and flush it as soon as the socket opens
+    net.pending = o;
+    if (!net.ws || net.ws.readyState === 3) netConnect();
+    netStatus('Connecting…');
+  }
+  function netOnMessage(m) {
+    if (m.type === 'err') { toast('⚠ ' + m.msg, 3400); return; }
+    if (m.type === 'lobby') { netLobby(m); return; }
+    if (m.type === 'state') { applySnapshot(m); return; }
+  }
+  function netLobby(m) {
+    net.room = m.room; net.seat = m.seat; net.host = m.host; net.players = m.players; net.started = m.started;
+    try { sessionStorage.setItem('ap-room', net.room); sessionStorage.setItem('ap-name', net.name); } catch (e) {}
+    $('netLobby').style.display = '';
+    $('lobbyCode').textContent = m.room;
+    $('lobbyPlayers').innerHTML = m.players.map(p => {
+      const emoji = p.side === 'goats' ? '🐐' : '🐅';
+      return '<div style="display:flex;align-items:center;gap:8px">' + emoji + ' <b>' + escapeHtml(p.name) + '</b>' + (p.seat === m.seat ? ' <i style="color:var(--text-dim)">(you)</i>' : '') + '</div>';
+    }).join('');
+    const ready = m.players.length >= 2;
+    $('lobbyHint').textContent = m.host
+      ? (ready ? 'Both sides are seated — start when ready!' : 'Waiting for the other player (' + m.players.length + '/2)…')
+      : (m.started ? 'The hunt is on…' : 'Waiting for the host to begin…');
+    $('netStartBtn').style.display = m.host ? '' : 'none';
+    $('netStartBtn').disabled = !ready;
+    $('lobbyShare').textContent = 'Share: ' + location.href.split('?')[0] + '?room=' + m.room;
+    $('roomChip').style.display = '';
+    $('roomChip').textContent = '🟢 Room ' + m.room + ' · ' + m.players.length + '/2';
+  }
+
+  function applySnapshot(s) {
+    net.room = s.room; net.seat = s.seat; net.host = s.host; net.mySide = s.mySide;
+    try { sessionStorage.setItem('ap-room', net.room); sessionStorage.setItem('ap-name', net.name); } catch (e) {}
+    if (!net.started) {
+      net.started = true;
+      $('setupScreen').classList.remove('active');
+      $('gameScreen').classList.add('active');
+      $('newGameBtn').style.display = '';
+      $('winOverlay').classList.remove('show');
+      $('log').innerHTML = '';
+    }
+    state = R.createGame({ names: s.names || ['Goats', 'Tigers'], opts: {} });
+    state.tigers = s.tigers.slice();
+    state.goats = new Set(s.goats);
+    state.goatsPlaced = s.goatsPlaced;
+    state.phase = s.phase;
+    state.turn = s.turn;
+    state.captures = s.captures;
+    state.rounds = s.rounds;
+    state.over = s.over;
+    state.winner = s.winner;
+    ui = { busy: false, sel: null, targets: [] };
+    // rebuild chronicle
+    const box = $('log');
+    box.innerHTML = '';
+    if (s.log) {
+      for (const e of s.log) {
+        const d = document.createElement('div');
+        d.className = 'lg';
+        d.innerHTML = '<span style="color:' + (e.cls === 'gold' ? 'var(--gold-bright)' : 'var(--text-dim)') + '">' + e.html + '</span>';
+        box.appendChild(d);
+      }
+      box.scrollTop = box.scrollHeight;
+    }
+    renderBoard();
+    renderPanel();
+    netAnimate(s.lastAction);
+    if (s.over && s.winner) {
+      if (!net.winShown) { net.winShown = true; showWin(); }
+    } else {
+      net.winShown = false;
+    }
+  }
+
+  function netAnimate(a) {
+    if (!a) return;
+    if (a.type === 'place') {
+      sfxPlace();
+      const el = boardSvg.querySelector('.pt[data-p="' + a.to + '"] .piece.goat');
+      if (el) el.classList.add('pop');
+    } else if (a.type === 'move') {
+      sfxMove();
+      netGlide(a.kind === 'goat' ? 'goat' : 'tiger', a.from, a.to, false);
+    } else if (a.type === 'capture') {
+      sfxCapture();
+      const pt = boardSvg.querySelector('.pt[data-p="' + a.goat + '"]');
+      if (pt) pt.classList.add('hit');
+      netGlide('tiger', a.from, a.to, true);
+    } else if (a.type === 'icapture') {
+      sfxPlace();
+      const el = boardSvg.querySelector('.pt[data-p="' + a.place.to + '"] .piece.goat');
+      if (el) el.classList.add('pop');
+      setTimeout(() => {
+        sfxCapture();
+        const pt = boardSvg.querySelector('.pt[data-p="' + a.capture.goat + '"]');
+        if (pt) pt.classList.add('hit');
+        netGlide('tiger', a.capture.from, a.capture.to, true);
+      }, 420);
+    } else if (a.type === 'pass') {
+      toast('The goats have no moves — they pass.');
+    }
+  }
+  function netGlide(kind, from, to, isCapture) {
+    const el = boardSvg.querySelector('.pt[data-p="' + to + '"] .piece.' + kind);
+    if (!el) return;
+    const [x1, y1] = state.PTS[from];
+    const [x2, y2] = state.PTS[to];
+    // snap back to the origin point, then glide to the destination
+    el.style.transition = 'none';
+    el.style.transform = 'translate(' + (x1 - x2) + ',' + (y1 - y2) + ')';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      el.style.transition = 'transform .45s cubic-bezier(.34,1.3,.64,1)';
+      el.style.transform = 'translate(0,0)';
+    }));
+  }
+
+  function netLeave() {
+    netSend({ type: 'leave' });
+    netReset();
+    toSetup();
+  }
+  function netReset() {
+    try { sessionStorage.removeItem('ap-room'); sessionStorage.removeItem('ap-name'); } catch (e) {}
+    net.pending = null;
+    net.room = null; net.seat = -1; net.host = false; net.players = []; net.started = false; net.winShown = false; net.mySide = null;
+    $('netLobby').style.display = 'none';
+    $('netStatus').textContent = '';
+    $('roomChip').style.display = 'none';
+    $('winOverlay').classList.remove('show');
+  }
+
+  $('netHostBtn').addEventListener('click', () => {
+    const name = $('netName').value.trim() || (mode === 'tigers' ? 'Tiger Hunter' : 'Goat Herder');
+    net.name = name;
+    netSend({ type: 'host', name, side: mode === 'tigers' ? 'tigers' : 'goats' });
+  });
+  $('netJoinBtn').addEventListener('click', () => {
+    const code = $('netCode').value.trim().toUpperCase();
+    if (code.length < 4) { toast('Enter the 4-letter room code'); return; }
+    const name = $('netName').value.trim() || 'Guest';
+    net.name = name;
+    netSend({ type: 'join', code, name });
+  });
+  $('netStartBtn').addEventListener('click', () => netSend({ type: 'start' }));
+  $('netLeaveBtn').addEventListener('click', netLeave);
+  $('netCode').addEventListener('keydown', e => { if (e.key === 'Enter') $('netJoinBtn').click(); });
+
+  (function () {
+    const q = new URLSearchParams(location.search);
+    const room = q.get('room');
+    let savedRoom = null, savedName = '';
+    try { savedRoom = sessionStorage.getItem('ap-room'); savedName = sessionStorage.getItem('ap-name') || ''; } catch (e) {}
+    if (room) { $('netCode').value = room.toUpperCase(); setMode('online'); $('netName').focus(); }
+    else if (savedRoom) {
+      // Returning after a page refresh mid-game: reconnect to our seat automatically.
+      net.room = savedRoom; net.name = savedName;
+      setMode('online');
+      $('netName').value = savedName;
+      netConnect(); // onopen sends {type:'rejoin'}
+    }
+  })();
+
+  /* ================= GAME START ================= */
+  function startGame() {
+    state = R.createGame({});
+    ui = { busy: false, sel: null, targets: [] };
+    $('setupScreen').classList.remove('active');
+    $('gameScreen').classList.add('active');
+    $('newGameBtn').style.display = '';
+    $('winOverlay').classList.remove('show');
+    $('log').innerHTML = '';
+    renderBoard();
+    renderPanel();
+    log('The hunt begins — <b>3 tigers</b> await <b>15 goats</b>.', 'gold');
+    nextTurn();
+  }
+
+  /* ================= BOARD RENDERING ================= */
+  function renderBoard() {
+    const g = state;
+    let s = '';
+    // background parchment panel
+    s += '<defs>' +
+      '<linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#fdf9ee"/><stop offset="1" stop-color="#efe6cf"/>' +
+      '</linearGradient>' +
+      '</defs>';
+    s += '<rect x="1.5" y="1.5" width="97" height="97" rx="8" fill="url(#bgGrad)" stroke="#8a7a55" stroke-width="1.4"/>';
+    // lines
+    const seen = new Set();
+    for (let p = 0; p < g.N; p++) {
+      for (const n of g.adj[p]) {
+        if (p < n) s += '<line x1="' + g.PTS[p][0] + '" y1="' + g.PTS[p][1] + '" x2="' + g.PTS[n][0] + '" y2="' + g.PTS[n][1] + '" stroke="#5a4a2f" stroke-width="0.55" stroke-linecap="round"/>';
+      }
+    }
+    // point slots + pieces
+    for (let p = 0; p < g.N; p++) {
+      const [x, y] = g.PTS[p];
+      const isTiger = g.tigers.indexOf(p) !== -1;
+      const isGoat = g.goats.has(p);
+      s += '<g class="pt" data-p="' + p + '" transform="translate(' + x + ',' + y + ')">';
+      s += '<circle r="1.5" fill="#fff" stroke="#8a7a55" stroke-width="0.5" opacity="' + (isTiger || isGoat ? '0' : '1') + '"/>';
+      if (isTiger) s += tigerSVG(p);
+      else if (isGoat) s += goatSVG(p);
+      s += '</g>';
+    }
+    boardSvg.innerHTML = s;
+    boardSvg.querySelectorAll('.pt').forEach(el => el.addEventListener('click', () => onPointClick(Number(el.dataset.p))));
+    refreshHighlights();
+  }
+
+  function tigerSVG() {
+    return '<g class="piece tiger">' +
+      '<circle class="tiger-body" r="4.4" fill="#e8862e" stroke="#7a3b12" stroke-width="0.9"/>' +
+      '<circle r="4.4" fill="none" stroke="#ffd9a8" stroke-width="0.4" opacity="0.6"/>' +
+      '<g stroke="#7a3b12" stroke-width="0.7" stroke-linecap="round">' +
+        '<line x1="-1.6" y1="-2.4" x2="-1.6" y2="2.6"/><line x1="0" y1="-2.8" x2="0" y2="2.9"/><line x1="1.6" y1="-2.4" x2="1.6" y2="2.6"/>' +
+      '</g>' +
+      '<circle r="1.05" fill="#2b1d05"/><circle cx="-0.45" cy="-0.5" r="0.32" fill="#fff"/><circle cx="0.45" cy="-0.5" r="0.32" fill="#fff"/>' +
+      '</g>';
+  }
+
+  function goatSVG() {
+    return '<g class="piece goat">' +
+      '<circle r="3.0" fill="#f5ecd4" stroke="#8a7a55" stroke-width="0.8"/>' +
+      '<circle r="2.1" fill="none" stroke="#d8c9a0" stroke-width="0.4"/>' +
+      '<g stroke="#8a7a55" stroke-width="0.55" stroke-linecap="round">' +
+        '<path d="M-1.1-2.1c-0.6-1.1-1.5-1.4-2-0.9" fill="none"/><path d="M1.1-2.1c0.6-1.1 1.5-1.4 2-0.9" fill="none"/>' +
+      '</g>' +
+      '<circle cx="-0.7" cy="-0.15" r="0.3" fill="#5a4a2f"/><circle cx="0.7" cy="-0.15" r="0.3" fill="#5a4a2f"/>' +
+      '</g>';
+  }
+
+  /* ================= HIGHLIGHTS ================= */
+  function refreshHighlights() {      boardSvg.querySelectorAll('.pt').forEach(el => {
+      const p = Number(el.dataset.p);
+      el.classList.remove('passive');
+      el.querySelectorAll('.target-ring').forEach(r => r.remove());
+      if (ui.sel !== null && p === ui.sel && state.tigers.indexOf(p) !== -1) {
+        el.classList.add('tiger-selectable');
+      }
+    });
+    // legal-target rings
+    for (const t of ui.targets) {
+      const el = boardSvg.querySelector('.pt[data-p="' + t + '"]');
+      if (!el) continue;
+      const [x, y] = state.PTS[t];
+      const ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('cx', 0); ring.setAttribute('cy', 0);
+      ring.setAttribute('r', 5.4);
+      ring.setAttribute('fill', 'none');
+      ring.setAttribute('stroke', '#f2d68a');
+      ring.setAttribute('stroke-width', 0.9);
+      ring.setAttribute('class', 'target-ring');
+      el.appendChild(ring);
+    }
+  }
+
+  /* ================= PANEL ================= */
+  function renderPanel() {
+    const s = state;
+    $('statCaptures').textContent = s.captures;
+    $('statGoats').textContent = (R.GOAT_COUNT - s.captures);
+    $('barCaptures').style.width = Math.min(100, (s.captures / R.CAPTURES_TO_WIN) * 100) + '%';
+    $('barGoats').style.width = Math.max(0, (1 - s.captures / R.GOAT_COUNT) * 100) + '%';
+
+    const goatActive = s.turn === 'goat';
+    const tigerActive = s.turn === 'tiger';
+    const goatHuman = isHumanGoats();
+    const tigerHuman = isHumanTigers();
+    $('turnChip').textContent = goatActive ? '🐐' : '🐅';
+    $('turnName').textContent = (goatActive ? 'Goats' : 'Tigers') + "' turn";
+    $('turnSub').textContent = goatActive
+      ? (s.phase === 'place' ? 'Placing goats (' + s.goatsPlaced + '/15)' : 'Moving a goat')
+      : 'Tigers move or capture';
+
+    const cards = [
+      {
+        emoji: '🐐', name: s.names[0] + nameTag('goats'),
+        sub: s.phase === 'place' ? 'Placing ' + s.goatsPlaced + '/15 goats' : 'Moving goats',
+        active: goatActive && goatHuman, color: '#f5ecd4'
+      },
+      {
+        emoji: '🐅', name: s.names[1] + nameTag('tigers'),
+        sub: 'Captures ' + s.captures + '/5',
+        active: tigerActive && tigerHuman, color: '#e8862e'
+      }
+    ];
+    function nameTag(side) {
+      if (net.mode === 'online') {
+        return net.mySide === side ? ' (you)' : '';
+      }
+      if (side === 'goats') return mode === 'goats' ? ' (you)' : (mode === 'tigers' ? ' (computer)' : '');
+      return mode === 'tigers' ? ' (you)' : (mode === 'goats' ? ' (computer)' : '');
+    }
+    $('playerCards').innerHTML = cards.map(c =>
+      '<div class="player-card' + (c.active ? ' active' : '') + '">' +
+        '<div class="p-head"><span class="p-emoji">' + c.emoji + '</span>' +
+        '<span class="p-name">' + c.name + '</span><span class="p-sub">' + c.sub + '</span></div></div>'
+    ).join('');
+
+    // hint
+    let hint = '';
+    if (s.over) hint = '';
+    else if (net.mode === 'online') {
+      const myTurn = (goatActive && goatHuman) || (tigerActive && tigerHuman);
+      hint = myTurn
+        ? (goatActive
+            ? (s.phase === 'place' ? 'Place a goat on any empty point — but never into a tiger\u2019s jaws!' : 'Tap one of your goats, then tap an empty neighbouring point to move it.')
+            : 'Tap a tiger, then tap a glowing target to move — or jump to eat a goat.')
+        : 'Waiting for ' + (goatActive ? s.names[0] : s.names[1]) + '\u2026';
+    }
+    else if (goatActive) {
+      if (goatHuman) hint = s.phase === 'place'
+        ? 'Place a goat on any empty point — but never into a tiger\u2019s jaws!'
+        : 'Tap one of your goats, then tap an empty neighbouring point to move it.';
+      else hint = 'The goats are thinking…';
+    } else {
+      if (tigerHuman) hint = 'Tap a tiger, then tap a glowing target to move — or jump to eat a goat.';
+      else hint = 'The tigers are stalking…';
+    }
+    $('hintBar').textContent = hint;
+  }
+
+  function isHumanGoats() {
+    if (net.mode === 'online') return net.mySide === 'goats';
+    return mode !== 'tigers';
+  }
+  function isHumanTigers() {
+    if (net.mode === 'online') return net.mySide === 'tigers';
+    return mode === 'tigers' || mode === 'local';
+  }
+
+  function log(html, cls) {
+    const el = document.createElement('div');
+    el.className = 'lg';
+    el.innerHTML = '<span style="color:' + (cls === 'gold' ? 'var(--gold-bright)' : 'var(--text-dim)') + '">' + html + '</span>';
+    const box = $('log');
+    box.appendChild(el);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function toast(t, ms) {
+    const el = $('toast');
+    el.textContent = t;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), ms || 2600);
+  }
+
+  /* ================= TURN LOGIC ================= */
+  function nextTurn() {
+    if (state.over) return;
+    ui.busy = false;                           // the turn is now open for input
+    renderPanel();
+
+    if (state.turn === 'goat') {
+      if (isHumanGoats()) return;              // wait for the human
+      const mv = state.phase === 'place' ? R.aiChooseGoatPlacement(state) : R.aiChooseGoatMove(state);
+      if (!mv) {
+        log('The goats have nowhere to go — they pass.', 'gold');
+        state.turn = 'tiger';
+        renderPanel();
+        setTimeout(nextTurn, 350);
+        return;
+      }
+      setTimeout(() => {
+        ui.busy = true;
+        if (state.phase === 'place') {
+          animatePlace(mv.to, () => {
+            log('🐐 The goats place a goat at point ' + mv.to + '.');
+            finishGoatTurn(mv.to);
+          });
+        } else {
+          animateMove(mv.goat, mv.to, 'goat', () => {
+            log('🐐 A goat steps from point ' + mv.goat + ' to ' + mv.to + '.');
+            finishGoatTurn(null);
+          });
+        }
+      }, 650);
+    } else {
+      // the goats win the moment none of the tigers can move
+      if (R.checkGoatsWin(state)) {
+        log('🐐 The goats surround the tigers — none can move!', 'gold');
+        renderPanel();
+        showWin();
+        return;
+      }
+      if (isHumanTigers()) return;             // wait for the human
+      setTimeout(() => {
+        ui.busy = true;
+        const mv = R.aiChooseTigerMove(state);
+        if (!mv) { log('The tigers are trapped!', 'gold'); }
+        else animateTigerMove(mv, () => {
+          if (mv.type === 'capture') log('🐅 A tiger leaps and eats a goat! (' + state.captures + '/5)');
+          else log('🐅 A tiger prowls to point ' + mv.to + '.');
+          finishTigerTurn();
+        });
+      }, 750);
+    }
+  }
+
+  /* A goat act has happened; resolve the immediate-capture rule, then hand
+     the turn to the tigers (or back to the goats if the goat was eaten). */
+  function finishGoatTurn(placedPt) {
+    const ic = R.immediateCapture(state, placedPt);
+    if (ic) {
+      // the placed goat is sitting in a tiger's jaws — it is eaten at once
+      setTimeout(() => {
+        animateTigerMove(ic, () => {
+          log('🐅 A tiger pounces on the careless goat! (' + state.captures + '/5)', 'gold');
+          toast('Placed into the jaws of a tiger! 🐅');
+          if (checkOver()) return;
+          state.turn = 'goat';
+          state.rounds++;
+          renderPanel();
+          setTimeout(nextTurn, 500);
+        });
+      }, 550);
+      return;
+    }
+    state.turn = 'tiger';
+    renderPanel();
+    setTimeout(nextTurn, 350);
+  }
+
+  function finishTigerTurn() {
+    if (checkOver()) return;
+    state.turn = 'goat';
+    state.rounds++;
+    renderPanel();
+    setTimeout(nextTurn, 350);
+  }
+
+  function checkOver() {
+    if (state.over) { showWin(); return true; }
+    if (state.turn === 'tiger' && R.checkGoatsWin(state)) { log('🐐 The goats surround the tigers — none can move!', 'gold'); showWin(); return true; }
+    return false;
+  }
+
+  /* ================= CLICK HANDLING ================= */
+  function onPointClick(p) {
+    if (state.over || ui.busy) return;
+    const s = state;
+
+    // ---- goats acting ----
+    if (s.turn === 'goat' && isHumanGoats()) {
+      if (s.phase === 'place') {
+        if (s.tigers.indexOf(p) !== -1 || s.goats.has(p)) { sfxDeny(); shakeBoard(); return; }
+        ui.busy = true;
+        if (net.mode === 'online') { netSend({ type: 'move', move: { type: 'place', to: p } }); return; }
+        animatePlace(p, () => {
+          log('🐐 A goat steps onto point ' + p + '.');
+          finishGoatTurn(p);
+        });
+        return;
+      }
+      // movement phase — if every goat is immobilised, the goats must pass
+      if (R.getGoatMoves(s).length === 0) {
+        sfxDeny();
+        toast('No goat can move — the goats pass.');
+        if (net.mode === 'online') { ui.busy = true; netSend({ type: 'move', move: { type: 'pass' } }); return; }
+        log('🐐 Every goat is stuck — the goats pass.', 'gold');
+        state.turn = 'tiger';
+        renderPanel();
+        setTimeout(nextTurn, 350);
+        return;
+      }
+      // movement phase
+      if (ui.sel === null) {
+        if (!s.goats.has(p)) { sfxDeny(); return; }
+        const targets = [];
+        for (const n of s.adj[p]) if (!s.goats.has(n) && s.tigers.indexOf(n) === -1) targets.push(n);
+        if (!targets.length) { sfxDeny(); toast('That goat is trapped!'); return; }
+        ui.sel = p; ui.targets = targets;
+        refreshHighlights();
+        return;
+      }
+      // moving selected goat
+      if (ui.targets.indexOf(p) === -1) {
+        if (p === ui.sel) { ui.sel = null; ui.targets = []; refreshHighlights(); return; }
+        sfxDeny(); return;
+      }
+      const from = ui.sel;
+      ui.sel = null; ui.targets = [];
+      ui.busy = true;
+      if (net.mode === 'online') { netSend({ type: 'move', move: { type: 'move', goat: from, to: p } }); return; }
+      animateMove(from, p, 'goat', () => {
+        log('🐐 A goat steps from point ' + from + ' to ' + p + '.');
+        finishGoatTurn(null);
+      });
+      return;
+    }
+
+    // ---- tigers acting ----
+    if (s.turn === 'tiger' && isHumanTigers()) {
+      if (ui.sel === null) {
+        const tIdx = s.tigers.indexOf(p);
+        if (tIdx === -1) { sfxDeny(); return; }
+        const targets = [];
+        for (const c of s.capTable[p]) {
+          if (s.goats.has(c.goat) && !s.goats.has(c.land) && s.tigers.indexOf(c.land) === -1) targets.push(c.land);
+        }
+        for (const n of s.adj[p]) {
+          if (!s.goats.has(n) && s.tigers.indexOf(n) === -1) targets.push(n);
+        }
+        if (!targets.length) { sfxDeny(); toast('This tiger is cornered!'); return; }
+        ui.sel = p; ui.targets = targets;
+        refreshHighlights();
+        return;
+      }
+      if (ui.targets.indexOf(p) === -1) {
+        if (p === ui.sel) { ui.sel = null; ui.targets = []; refreshHighlights(); return; }
+        sfxDeny(); return;
+      }
+      const from = ui.sel;
+      const tIdx = s.tigers.indexOf(from);
+      const isCapture = s.capTable[from].some(c => c.land === p && s.goats.has(c.goat));
+      const goat = isCapture ? s.capTable[from].find(c => c.land === p && s.goats.has(c.goat)).goat : null;
+      ui.sel = null; ui.targets = [];
+      ui.busy = true;
+      if (net.mode === 'online') { netSend({ type: 'move', move: { type: isCapture ? 'capture' : 'move', tiger: tIdx, from, goat, to: p } }); return; }
+      animateTigerMove({ type: isCapture ? 'capture' : 'move', tiger: tIdx, from, goat, to: p }, () => {
+        log(isCapture ? '🐅 A tiger leaps and eats a goat! (' + s.captures + '/5)' : '🐅 A tiger prowls to point ' + p + '.');
+        finishTigerTurn();
+      });
+      return;
+    }
+  }
+
+  /* ================= ANIMATIONS ================= */
+  function animatePlace(p, done) {
+    sfxPlace();
+    // apply the move to state first so the pawn is present the instant it's clicked
+    R.applyGoatMove(state, { type: 'place', to: p });
+    renderBoard();
+    setTimeout(() => { done && done(); }, 200);
+  }
+
+  function animateMove(from, to, kind, done) {
+    sfxMove();
+    // apply the move first, render the new board, then FLIP-glide the piece in
+    R.applyGoatMove(state, { type: 'move', goat: from, to: to });
+    renderBoard();
+    const el = boardSvg.querySelector('.pt[data-p="' + to + '"] .piece.' + kind);
+    if (el) {
+      const [x1, y1] = state.PTS[from];
+      const [x2, y2] = state.PTS[to];
+      el.style.transition = 'none';
+      el.style.transform = 'translate(' + (x1 - x2) + ',' + (y1 - y2) + ')';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'transform .4s cubic-bezier(.34,1.3,.64,1)';
+        el.style.transform = 'translate(0,0) scale(1.05)';
+      }));
+    }
+    setTimeout(() => { renderBoard(); done && done(); }, 430);
+  }
+
+  function animateTigerMove(move, done) {
+    const from = move.from, to = move.to;
+    if (move.type === 'capture') {
+      sfxCapture();
+      R.applyTigerMove(state, move);
+      renderBoard();
+      // ghost of the eaten goat flies away, drawn above the fresh board
+      const ghost = document.createElementNS(NS, 'g');
+      ghost.setAttribute('transform', 'translate(' + state.PTS[move.goat][0] + ',' + state.PTS[move.goat][1] + ')');
+      ghost.innerHTML = goatSVG();
+      ghost.querySelector('.goat').classList.add('eaten');
+      boardSvg.appendChild(ghost);
+      setTimeout(() => ghost.remove(), 600);
+      const el = boardSvg.querySelector('.pt[data-p="' + to + '"] .piece.tiger');
+      if (el) {
+        const [x1, y1] = state.PTS[from];
+        const [x2, y2] = state.PTS[to];
+        el.style.transition = 'none';
+        el.style.transform = 'translate(' + (x1 - x2) + ',' + (y1 - y2) + ')';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          el.style.transition = 'transform .45s cubic-bezier(.34,1.56,.64,1)';
+          el.style.transform = 'translate(0,0) scale(1.08)';
+        }));
+      }
+      setTimeout(() => { renderBoard(); done && done(); }, 520);
+      return;
+    }
+    sfxMove();
+    R.applyTigerMove(state, move);
+    renderBoard();
+    const el = boardSvg.querySelector('.pt[data-p="' + to + '"] .piece.tiger');
+    if (el) {
+      const [x1, y1] = state.PTS[from];
+      const [x2, y2] = state.PTS[to];
+      el.style.transition = 'none';
+      el.style.transform = 'translate(' + (x1 - x2) + ',' + (y1 - y2) + ')';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'transform .4s cubic-bezier(.34,1.3,.64,1)';
+        el.style.transform = 'translate(0,0) scale(1.05)';
+      }));
+    }
+    setTimeout(() => { renderBoard(); done && done(); }, 430);
+  }
+
+  function shakeBoard() { boardSvg.classList.remove('shake'); void boardSvg.offsetWidth; boardSvg.classList.add('shake'); }
+
+  /* ================= WIN ================= */
+  function showWin() {
+    const s = state;
+    const winner = s.winner;
+    const humanWon =
+      (winner === 'goats' && isHumanGoats()) ||
+      (winner === 'tigers' && isHumanTigers());
+    $('winCrown').textContent = winner === 'tigers' ? '🐅' : winner === 'goats' ? '🐐' : '🤝';
+    $('winTitle').textContent = winner === 'tigers' ? 'The Tigers Feast!' : winner === 'goats' ? 'The Goats Prevail!' : 'A Truce';
+    $('winName').innerHTML = winner === 'tigers'
+      ? 'The tigers captured <b>' + s.captures + ' goats</b> — the hunt is over.'
+      : winner === 'goats'
+        ? 'Every tiger is surrounded. <b>Not a single one can move.</b>'
+        : 'Neither side could break the other. The forest keeps its peace.';
+    $('winOverlay').classList.add('show');
+    if (winner === 'tigers' || winner === 'goats') {
+      if (humanWon) sfxWin(); else sfxLose();
+      confetti();
+    }
+  }
+
+  function confetti() {
+    const colors = ['#e8862e', '#f2d68a', '#d4af37', '#5fae7f', '#f5ecd4'];
+    for (let i = 0; i < 70; i++) {
+      const d = document.createElement('div');
+      d.className = 'confetti';
+      d.style.left = Math.random() * 100 + 'vw';
+      d.style.background = colors[i % colors.length];
+      d.style.animationDuration = (2.4 + Math.random() * 2.4) + 's';
+      d.style.animationDelay = (Math.random() * 0.8) + 's';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 5600);
+    }
+  }
+
+  /* ================= INIT ================= */
+  if (state) renderBoard();
+})();
+</script>
+</body>
+</html>

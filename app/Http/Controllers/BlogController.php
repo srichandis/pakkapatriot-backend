@@ -2,20 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
+use App\Services\BlogFeed;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Webkul\Shop\Http\Controllers\ProductsCategoriesProxyController;
 
 class BlogController extends Controller
 {
-    /**
-     * Display a listing of published blog posts.
-     */
-    public function index()
-    {
-        $blogs = Blog::published()
-            ->orderBy('published_at', 'desc')
-            ->paginate(12);
+    public function __construct(protected BlogFeed $feed) {}
 
-        return view('blog.index', compact('blogs'));
+    /**
+     * Story listing with server-side search and category filtering.
+     */
+    public function index(Request $request): View
+    {
+        $search = trim((string) $request->query('q', ''));
+        $category = trim((string) $request->query('category', ''));
+
+        return view('blog.index', [
+            'posts' => $this->feed->paginate(24, $search ?: null, $category ?: null),
+            'categories' => $this->feed->categories(),
+            'total' => $this->feed->publishedCount(),
+            'search' => $search,
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -25,23 +35,14 @@ class BlogController extends Controller
      * published blog post, fall back to the storefront proxy so legacy
      * category/product URLs at the root keep working.
      */
-    public function show($slug)
+    public function show(string $slug)
     {
-        $blog = Blog::published()
-            ->where('slug', $slug)
-            ->first();
+        $post = $this->feed->find($slug);
 
-        if (! $blog) {
-            return app(\Webkul\Shop\Http\Controllers\ProductsCategoriesProxyController::class)->index(request());
+        if (! $post) {
+            return app(ProductsCategoriesProxyController::class)->index(request());
         }
 
-        // Get related posts (same author, or recent)
-        $relatedPosts = Blog::published()
-            ->where('id', '!=', $blog->id)
-            ->orderBy('published_at', 'desc')
-            ->take(3)
-            ->get();
-
-        return view('blog.show', compact('blog', 'relatedPosts'));
+        return view('blog.show', compact('post'));
     }
 }

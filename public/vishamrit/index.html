@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>विष & अमृत · Vish & Amrit — The Chase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Marcellus&family=Noto+Sans+Devanagari:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — the poison & nectar of the chase
+============================================================ */
+:root {
+  --gold: #d4af37;
+  --gold-bright: #f2d68a;
+  --gold-deep: #9c7a1e;
+  --bg-1: #101a12;
+  --bg-2: #060b08;
+  --panel: rgba(12, 22, 15, 0.92);
+  --panel-border: rgba(212, 175, 55, 0.45);
+  --text: #f1ecdc;
+  --text-dim: #b9c4ba;
+  --vish: #3b1a2b;
+  --vish-core: #6d1f3c;
+  --vish-glow: #a33a5e;
+  --runner-1: #e8a93d;
+  --runner-2: #3fa9a0;
+  --runner-3: #d96c4a;
+  --statue: #8a8f88;
+  --amrit: #7ce38b;
+  --shadow: 0 18px 50px rgba(0,0,0,.55);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Marcellus', Georgia, 'Times New Roman', serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(60, 120, 70, 0.28), transparent 60%),
+    radial-gradient(900px 600px at 90% 110%, rgba(160, 120, 40, 0.14), transparent 55%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-2) 70%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* faint serpent / amrita ring overlay */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23f2d68a' stroke-width='1.4'%3E%3Ccircle cx='100' cy='100' r='82'/%3E%3Ccircle cx='100' cy='100' r='62'/%3E%3Cpath d='M100 30c12 20 20 42 20 62s-8 42-20 62c-12-20-20-42-20-62s8-42 20-62z'/%3E%3Ccircle cx='100' cy='100' r='10'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+::selection { background: rgba(212,175,55,.35); }
+
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+/* ============================================================
+   HEADER
+============================================================ */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  padding: 18px 26px 8px;
+  max-width: 1360px; margin: 0 auto;
+}
+.brand { display: flex; align-items: baseline; gap: 14px; }
+.brand h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(24px, 3.6vw, 36px);
+  font-weight: 700; letter-spacing: 1px;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 55%, var(--gold-deep));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 18px rgba(212,175,55,.25);
+}
+.brand .deva { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 19px; color: var(--gold); opacity: .92; }
+.brand .sub { font-size: 12px; letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase; }
+header .actions { display: flex; gap: 10px; }
+
+.btn {
+  position: relative;
+  border: 1px solid rgba(212,175,55,.55);
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 14px; letter-spacing: .5px;
+  color: #2b1d05;
+  background: linear-gradient(180deg, #f7e2a0, #e0b64a 45%, #c99f2e);
+  box-shadow: 0 2px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  overflow: hidden;
+}
+.btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); box-shadow: 0 0 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.4); }
+.btn:disabled { filter: grayscale(.7) brightness(.7); cursor: not-allowed; transform: none; }
+.btn::after {
+  content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,.55), transparent);
+  transition: left .5s ease;
+}
+.btn:hover::after { left: 130%; }
+
+.btn.ghost {
+  background: transparent; color: var(--gold-bright);
+  border-color: rgba(212,175,55,.4);
+  box-shadow: none;
+}
+.btn.ghost:hover { background: rgba(212,175,55,.08); }
+
+/* ============================================================
+   SETUP SCREEN
+============================================================ */
+.screen { display: none; }
+.screen.active { display: block; }
+
+#setupScreen {
+  max-width: 820px; margin: 26px auto 60px; padding: 0 20px;
+  animation: fadeUp .6s ease both;
+}
+.setup-card {
+  position: relative;
+  background: linear-gradient(170deg, rgba(20,34,24,.92), rgba(8,14,10,.94));
+  border: 1px solid var(--panel-border);
+  border-radius: 22px;
+  padding: 40px 44px 46px;
+  box-shadow: var(--shadow), inset 0 0 60px rgba(212,175,55,.05);
+}
+.setup-card::before, .setup-card::after {
+  content: ""; position: absolute; width: 44px; height: 44px;
+  border: 2px solid var(--gold); opacity: .7; pointer-events: none;
+}
+.setup-card::before { top: 12px; left: 12px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+.setup-card::after { bottom: 12px; right: 12px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
+
+.setup-card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  text-align: center; font-size: clamp(24px, 3.4vw, 34px);
+  color: var(--gold-bright); letter-spacing: 1px; margin-bottom: 6px;
+}
+.setup-card .tagline { text-align: center; color: var(--text-dim); font-size: 14px; letter-spacing: .6px; margin-bottom: 30px; }
+
+.setup-section { margin-bottom: 26px; }
+.setup-label {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
+}
+.setup-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(212,175,55,.4), transparent); }
+
+.player-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.player-opt {
+  flex: 1; min-width: 160px; padding: 14px 10px; text-align: center; border-radius: 12px;
+  border: 1px solid rgba(212,175,55,.3); background: rgba(255,255,255,.03);
+  cursor: pointer; color: var(--text); font-size: 15px; transition: all .15s ease;
+}
+.player-opt:hover { border-color: rgba(212,175,55,.6); transform: translateY(-2px); }
+.player-opt.selected {
+  border-color: var(--gold); background: linear-gradient(160deg, rgba(212,175,55,.16), rgba(212,175,55,.05));
+  box-shadow: 0 0 18px rgba(212,175,55,.15);
+}
+.player-opt .emoji { font-size: 26px; display: block; margin-bottom: 6px; }
+.player-opt small { display: block; color: var(--text-dim); font-size: 11px; margin-top: 3px; }
+
+/* board preview — a square 7×7 */
+.preview-wrap { display: flex; justify-content: center; }
+.board-preview {
+  width: 320px; height: auto; border-radius: 18px;
+  border: 1px solid rgba(212,175,55,.35);
+  background: linear-gradient(165deg, #fdf9ee, #efe6cf);
+  padding: 12px; box-shadow: inset 0 2px 12px rgba(0,0,0,.18);
+}
+
+#startBtn { display: block; margin: 30px auto 0; font-size: 17px; padding: 14px 44px; border-radius: 12px; letter-spacing: 1.5px; }
+
+/* ============================================================
+   GAME SCREEN
+============================================================ */
+#gameScreen { max-width: 1240px; margin: 0 auto; padding: 10px 20px 40px; }
+.game-wrap { display: flex; gap: 22px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+
+/* ---- board ---- */
+#boardWrap {
+  position: relative; flex: 1 1 560px; max-width: 720px;
+  display: flex; justify-content: center;
+}
+#boardSvg {
+  width: 100%; height: auto;
+  filter: drop-shadow(0 22px 40px rgba(0,0,0,.5));
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+#boardSvg .pt { cursor: pointer; }
+#boardSvg .pt.passive { cursor: default; }
+
+@keyframes pulseRing {
+  0%, 100% { opacity: .95; }
+  50% { opacity: .3; }
+}
+.target-ring { animation: pulseRing 1.05s ease-in-out infinite; }
+
+/* Critical: SVG transform animations must be relative to each piece, not the
+   whole viewBox. Without this, scale()/translate() on .piece jump pieces off
+   the board (default reference box is the 100x100 viewBox). */
+.piece { transform-box: fill-box; transform-origin: center; }
+
+@keyframes freezeIn {
+  0% { filter: grayscale(0) brightness(1); }
+  100% { filter: grayscale(1) brightness(.8); }
+}
+.piece.frozen { animation: freezeIn .5s ease forwards; }
+
+@keyframes amritGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(124,227,139,0)); }
+  50% { filter: drop-shadow(0 0 9px rgba(124,227,139,1)); }
+}
+.piece.amrit { animation: amritGlow .6s ease 2; }
+
+@keyframes flyEat {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  35% { transform: translate(30%, -30%) scale(1.15) rotate(18deg); opacity: .9; }
+  100% { transform: translate(70%, -70%) scale(.2) rotate(150deg); opacity: 0; }
+}
+.piece.eaten { animation: flyEat .55s ease-in forwards; }
+
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.shake { animation: shakeX .4s ease; }
+
+@keyframes glowSel {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(242,214,138,0)); }
+  50% { filter: drop-shadow(0 0 8px rgba(242,214,138,.95)); }
+}
+.pt.selected .piece { animation: glowSel 1.05s ease-in-out infinite; }
+
+/* ---- side panel ---- */
+#panel { flex: 0 1 380px; width: 380px; max-width: 100%; display: flex; flex-direction: column; gap: 14px; }
+
+.card {
+  background: linear-gradient(165deg, rgba(18,30,20,.92), rgba(8,14,10,.94));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4), inset 0 0 40px rgba(212,175,55,.04);
+  padding: 16px 18px;
+}
+
+/* turn banner */
+#turnBanner {
+  display: flex; align-items: center; gap: 12px;
+  border-left: 3px solid var(--gold);
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(212,175,55,.07);
+}
+#turnBanner .chip { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.2); }
+#turnBanner .t-name { font-size: 16px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; letter-spacing: .4px; }
+#turnBanner .t-sub { font-size: 12px; color: var(--text-dim); letter-spacing: .5px; }
+
+/* status cards */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-card { border-radius: 12px; padding: 12px 14px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); text-align: center; }
+.stat-card .s-val { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 700; color: var(--gold-bright); line-height: 1.1; }
+.stat-card .s-lbl { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-top: 3px; }
+.stat-card.vish-s { border-color: rgba(163,58,94,.4); }
+.stat-card.runner-s { border-color: rgba(232,169,61,.4); }
+.stat-card .s-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.1); margin-top: 8px; overflow: hidden; }
+.stat-card .s-bar > i { display: block; height: 100%; border-radius: 3px; transition: width .4s ease; }
+
+/* player cards */
+.player-card { border-radius: 12px; padding: 11px 14px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025); transition: border-color .2s ease, box-shadow .2s ease; }
+.player-card.active { border-color: var(--gold); box-shadow: 0 0 18px rgba(212,175,55,.18); }
+.player-card .p-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.player-card .p-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.player-card .p-name { font-size: 14.5px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; flex: 1; }
+.player-card .p-sub { font-size: 11px; color: var(--text-dim); letter-spacing: .4px; }
+
+/* log */
+#log { max-height: 140px; overflow-y: auto; font-size: 12.5px; line-height: 1.65; color: var(--text-dim); }
+#log .lg { padding: 2px 0; border-bottom: 1px dashed rgba(212,175,55,.12); }
+#log .lg b { font-weight: 700; }
+#log::-webkit-scrollbar { width: 6px; }
+#log::-webkit-scrollbar-thumb { background: rgba(212,175,55,.3); border-radius: 3px; }
+
+/* rules toggle */
+#rulesPanel .rules-body { display: none; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+#rulesPanel.open .rules-body { display: block; margin-top: 10px; }
+.rules-toggle { background: none; border: none; color: var(--gold-bright); font-size: 13.5px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; }
+.rules-toggle .caret { transition: transform .2s ease; display: inline-block; }
+#rulesPanel.open .caret { transform: rotate(90deg); }
+.rules-body ul { padding-left: 18px; }
+.rules-body li { margin-bottom: 5px; }
+.rules-body b { color: var(--text); }
+
+/* hint bar */
+#hintBar {
+  font-size: 12.5px; color: var(--text-dim); line-height: 1.5;
+  padding: 9px 12px; border-radius: 10px;
+  border: 1px dashed rgba(212,175,55,.35); background: rgba(212,175,55,.05);
+}
+
+/* toast */
+#toast {
+  position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 20px);
+  z-index: 50; opacity: 0; pointer-events: none;
+  padding: 12px 22px; border-radius: 12px; font-size: 14px;
+  background: rgba(10,16,12,.96); border: 1px solid var(--gold);
+  color: var(--gold-bright); box-shadow: var(--shadow);
+  transition: opacity .25s ease, transform .25s ease; max-width: 90vw; text-align: center;
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* win overlay */
+#winOverlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(6,10,7,.82); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+#winOverlay.show { display: flex; }
+.win-box {
+  text-align: center; padding: 46px 54px; border-radius: 24px;
+  background: linear-gradient(170deg, rgba(20,34,24,.97), rgba(8,14,10,.97));
+  border: 1px solid var(--gold); box-shadow: var(--shadow), 0 0 80px rgba(212,175,55,.15);
+  animation: fadeUp .5s ease both; max-width: 520px;
+}
+.win-box .w-crown { font-size: 48px; margin-bottom: 8px; }
+.win-box h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 34px; color: var(--gold-bright); margin-bottom: 6px; }
+.win-box .w-name { font-size: 17px; color: var(--text); margin-bottom: 18px; line-height: 1.6; }
+.win-box .w-name b { color: var(--gold-bright); }
+.win-box .win-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* confetti */
+.confetti {
+  position: fixed; top: -20px; z-index: 101; pointer-events: none;
+  width: 10px; height: 14px; opacity: .9;
+  animation: confFall linear forwards;
+}
+@keyframes confFall { to { transform: translateY(110vh) rotate(720deg); opacity: .2; } }
+
+/* network room chip + panel rows */
+#roomChip {
+  font-size: 12px; letter-spacing: .5px; color: var(--gold-bright);
+  border: 1px solid rgba(212,175,55,.45); border-radius: 999px;
+  padding: 7px 14px; background: rgba(212,175,55,.07); align-self: center;
+  white-space: nowrap;
+}
+#netStatus { font-size: 12.5px; }
+.opt-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(212,175,55,.18); flex-wrap: wrap; }
+
+/* responsive */
+@media (max-width: 900px) {
+  #panel { flex: 1 1 100%; width: 100%; max-width: 680px; }
+  .game-wrap { align-items: center; }
+  #setupScreen .setup-card { padding: 26px 20px 30px; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="deva">विष & अमृत</span>
+    <div>
+      <h1>Vish &amp; Amrit</h1>
+      <div class="sub">The Chase · Poison &amp; Nectar</div>
+    </div>
+  </div>
+  <div class="actions">
+    <span id="roomChip" style="display:none"></span>
+    <button class="btn ghost" id="soundBtn" title="Toggle sound">🔔 Sound</button>
+    <button class="btn ghost" id="newGameBtn" style="display:none">✦ New Game</button>
+  </div>
+</header>
+
+<!-- ================= SETUP ================= -->
+<section id="setupScreen" class="screen active">
+  <div class="setup-card">
+    <h2>Choose Your Side</h2>
+    <p class="tagline">One poison chases three. Touch them and they freeze to stone — free them with the nectar of Amrit.</p>
+
+    <div class="setup-section">
+      <div class="setup-label">Mode</div>
+      <div class="player-row">
+        <button class="player-opt" id="modeRunners"><span class="emoji">🏃</span>Play as Runners<small>Flee the poison with your three runners</small></button>
+        <button class="player-opt" id="modeVish"><span class="emoji">🕷️</span>Play as Vish<small>Hunt down the runners as the poison</small></button>
+        <button class="player-opt" id="modeLocal"><span class="emoji">🏠</span>Two Players<small>Hot-seat on this device</small></button>
+        <button class="player-opt" id="modeOnline"><span class="emoji">🌐</span>Online Room<small>Challenge a friend over the network</small></button>
+      </div>
+    </div>
+
+    <div id="netPanel" style="display:none">
+      <div class="setup-section">
+        <div class="setup-label">Network</div>
+        <div class="opt-row" style="margin-bottom:10px">
+          <label for="netName" style="min-width:90px">Your name</label>
+          <input id="netName" maxlength="16" placeholder="e.g. Kalidas" style="flex:1;padding:9px 12px;border-radius:9px;border:1px solid rgba(212,175,55,.3);background:rgba(6,10,8,.6);color:var(--text);font-size:14px">
+        </div>
+        <div class="opt-row" style="gap:10px;flex-wrap:wrap">
+          <button class="btn" id="netHostBtn">🛡 Create Room</button>
+          <input id="netCode" maxlength="4" placeholder="CODE" style="flex:0 0 110px;text-align:center;letter-spacing:6px;text-transform:uppercase;padding:9px 6px;border-radius:9px;border:1px solid rgba(212,175,55,.3);background:rgba(6,10,8,.6);color:var(--gold-bright);font-weight:700;font-size:15px">
+          <button class="btn ghost" id="netJoinBtn">🔑 Join Room</button>
+        </div>
+        <div id="netStatus" style="margin-top:10px"></div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--text-dim);line-height:1.5">
+          Create a room to play the side you selected above (🏃 or 🕷️) — a friend joins with your 4-letter code and takes the other side.
+        </div>
+      </div>
+      <div class="setup-section" id="netLobby" style="display:none">
+        <div class="setup-label">Lobby</div>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-radius:12px;background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.35)">
+          <div>
+            <div style="font-size:11px;letter-spacing:3px;color:var(--text-dim)">ROOM CODE</div>
+            <div id="lobbyCode" style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--gold-bright);letter-spacing:8px"></div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div id="lobbyHint" style="font-size:13px;color:var(--text-dim);margin-bottom:8px"></div>
+            <div id="lobbyPlayers" style="font-size:13.5px;line-height:1.9"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn" id="netStartBtn" style="display:none">⚔ Begin the Chase</button>
+          <button class="btn ghost" id="netLeaveBtn">✕ Leave Room</button>
+        </div>
+        <div id="lobbyShare" style="margin-top:10px;font-size:12px;color:var(--text-dim);word-break:break-all"></div>
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <div class="setup-label">The Board</div>
+      <div class="preview-wrap">
+        <svg class="board-preview" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="2" y="2" width="96" height="96" rx="8" fill="#fdf9ee" stroke="#8a7a55" stroke-width="1.4"/>
+          <g>
+            <rect x="7" y="7" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="19.5" y="7" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="32" y="7" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="44.5" y="7" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="57" y="7" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="69.5" y="7" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="82" y="7" width="12.5" height="12.5" rx="2" fill="#f5eeda"/>
+            <rect x="7" y="19.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="19.5" y="19.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="32" y="19.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="44.5" y="19.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="57" y="19.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="69.5" y="19.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="82" y="19.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/>
+            <rect x="7" y="32" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="19.5" y="32" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="32" y="32" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="44.5" y="32" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="57" y="32" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="69.5" y="32" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="82" y="32" width="12.5" height="12.5" rx="2" fill="#f5eeda"/>
+            <rect x="7" y="44.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="19.5" y="44.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="32" y="44.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="44.5" y="44.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="57" y="44.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="69.5" y="44.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="82" y="44.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/>
+            <rect x="7" y="57" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="19.5" y="57" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="32" y="57" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="44.5" y="57" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="57" y="57" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="69.5" y="57" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="82" y="57" width="12.5" height="12.5" rx="2" fill="#f5eeda"/>
+            <rect x="7" y="69.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="19.5" y="69.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="32" y="69.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="44.5" y="69.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="57" y="69.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="69.5" y="69.5" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="82" y="69.5" width="12.5" height="12.5" rx="2" fill="#efe5ca"/>
+            <rect x="7" y="82" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="19.5" y="82" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="32" y="82" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="44.5" y="82" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="57" y="82" width="12.5" height="12.5" rx="2" fill="#f5eeda"/><rect x="69.5" y="82" width="12.5" height="12.5" rx="2" fill="#efe5ca"/><rect x="82" y="82" width="12.5" height="12.5" rx="2" fill="#f5eeda"/>
+          </g>
+          <g stroke="#8a7a55" stroke-width="0.6" fill="none" opacity="0.5">
+            <circle cx="50" cy="50" r="6"/>
+            <circle cx="50" cy="50" r="2.5" fill="#8a7a55" stroke="none" opacity="0.6"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <button class="btn" id="startBtn">⚔ &nbsp;Begin the Chase</button>
+  </div>
+</section>
+
+<!-- ================= GAME ================= -->
+<section id="gameScreen" class="screen">
+  <div class="game-wrap">
+    <div id="boardWrap">
+      <svg id="boardSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <aside id="panel">
+      <div class="card" id="turnBanner">
+        <div class="chip" id="turnChip">🏃</div>
+        <div>
+          <div class="t-name" id="turnName"></div>
+          <div class="t-sub" id="turnSub">The runners move first</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stat-grid">
+          <div class="stat-card runner-s">
+            <div class="s-val" id="statRunners">3</div>
+            <div class="s-lbl">🏃 Runners free</div>
+            <div class="s-bar"><i id="barRunners" style="width:100%;background:linear-gradient(90deg,#b8943a,#e8a93d)"></i></div>
+          </div>
+          <div class="stat-card vish-s">
+            <div class="s-val" id="statStatues">0</div>
+            <div class="s-lbl">🗿 Statues frozen</div>
+            <div class="s-bar"><i id="barStatues" style="width:0%;background:linear-gradient(90deg,#5f6460,#8a8f88)"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="playerCards"></div>
+
+      <div class="card" id="hintCard">
+        <div class="label setup-label" style="margin-bottom:6px">Hint</div>
+        <div id="hintBar">Tap one of your pieces, then tap a glowing square to move.</div>
+      </div>
+
+      <div class="card">
+        <div class="label setup-label" style="margin-bottom:6px">Chronicle</div>
+        <div id="log"></div>
+      </div>
+
+      <div class="card" id="rulesPanel">
+        <button class="rules-toggle" id="rulesToggle"><span class="caret">▶</span> How to play</button>
+        <div class="rules-body">
+          <ul>
+            <li><b>Vish</b> (🕷️ the poison) hunts <b>three runners</b> (🏃) across a 7×7 board.</li>
+            <li><b>Runners</b> move one square (any of 8 directions). <b>Vish</b> can move one square — or <b>leap two squares</b> in a straight line, outrunning them.</li>
+            <li>If <b>Vish touches a runner</b>, that runner freezes into a <b>Statue</b> (🗿) — frozen stone, unable to move.</li>
+            <li>A free runner who ends their move <b>touching a statue</b> cries <b>“Amrit!”</b> and releases them back into the chase.</li>
+            <li><b>Vish wins</b> by freezing all three runners. <b>The runners win</b> by surviving 60 rounds without being fully frozen.</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div id="toast"></div>
+
+<div id="winOverlay">
+  <div class="win-box">
+    <div class="w-crown" id="winCrown">🏃</div>
+    <h2 id="winTitle">Victory!</h2>
+    <div class="w-name" id="winName"></div>
+    <div class="win-btns">
+      <button class="btn" id="playAgainBtn">Play Again</button>
+      <button class="btn ghost" id="toSetupBtn">New Setup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= RULES ENGINE ================= -->
+<script src="engine.js"></script>
+
+<!-- ================= UI ================= -->
+<script>
+(function () {
+  'use strict';
+  const R = VishAmritRules;
+
+  /* ---------- state ---------- */
+  let state = null;
+  let ui = {
+    busy: false,          // animation / AI turn in progress
+    sel: null,            // selected piece cell
+    selRunner: null,      // selected runner id (for runner turns)
+    targets: []           // currently highlighted legal destination cells
+  };
+  let mode = 'runners';   // 'runners' | 'vish' | 'local' | 'online'
+  let sideChoice = 'runners'; // the side the host wants when creating a room
+  let net = { mode: 'local', ws: null, room: null, seat: -1, host: false, name: '', players: [], started: false, winShown: false, pending: null, mySide: null };
+  let soundOn = true;
+  try { soundOn = localStorage.getItem('vam-sound') !== '0'; } catch (e) {}
+
+  /* ---------- DOM ---------- */
+  const $ = id => document.getElementById(id);
+  const boardSvg = $('boardSvg');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  /* ================= SOUND (WebAudio) ================= */
+  let actx = null;
+  function ac() { if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (actx && actx.state === 'suspended') actx.resume(); return actx; }
+  function beep(freq, dur, type, gain, when, slideTo) {
+    if (!soundOn) return;
+    const c = ac(); if (!c) return;
+    const t0 = c.currentTime + (when || 0);
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t0);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain || 0.12, t0 + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  function sfxMove() { beep(300, 0.07, 'triangle', 0.1); }
+  function sfxFreeze() { beep(160, 0.22, 'sawtooth', 0.13, 0, 60); beep(90, 0.25, 'square', 0.1, 0.03); }
+  function sfxAmrit() { [660, 880, 1100].forEach((f, i) => beep(f, 0.16, 'sine', 0.11, i * 0.07)); }
+  function sfxWin() { [523, 659, 784, 1047, 1319].forEach((f, i) => beep(f, 0.2, 'triangle', 0.12, i * 0.12)); }
+  function sfxLose() { [392, 330, 262, 196].forEach((f, i) => beep(f, 0.2, 'triangle', 0.11, i * 0.12)); }
+  function sfxDeny() { beep(140, 0.2, 'sawtooth', 0.1, 0, 110); }
+
+  /* ================= SETUP ================= */
+  const modeBtns = { runners: $('modeRunners'), vish: $('modeVish'), local: $('modeLocal'), online: $('modeOnline') };
+  function setMode(k) {
+    mode = k;
+    if (k === 'runners' || k === 'vish') sideChoice = k;
+    Object.keys(modeBtns).forEach(x => modeBtns[x].classList.toggle('selected', x === k));
+    const online = k === 'online';
+    $('netPanel').style.display = online ? '' : 'none';
+    $('startBtn').style.display = online ? 'none' : '';
+    if (online) netConnect();
+  }
+  Object.keys(modeBtns).forEach(k => modeBtns[k].addEventListener('click', () => setMode(k)));
+  modeBtns.runners.classList.add('selected');
+
+  $('startBtn').addEventListener('click', () => {
+    if (net.mode === 'online') return;   // online games start from the lobby
+    startGame();
+  });
+  $('newGameBtn').addEventListener('click', () => { $('winOverlay').classList.remove('show'); if (net.mode === 'online') { netLeave(); return; } toSetup(); });
+  $('playAgainBtn').addEventListener('click', () => {
+    $('winOverlay').classList.remove('show');
+    if (net.mode === 'online') {
+      if (net.host) netSend({ type: 'rematch' });
+      else toast('Only the host can start a rematch', 3200);
+      return;
+    }
+    startGame();
+  });
+  $('toSetupBtn').addEventListener('click', () => { $('winOverlay').classList.remove('show'); if (net.mode === 'online') { netLeave(); return; } toSetup(); });
+  function toSetup() { $('gameScreen').classList.remove('active'); $('setupScreen').classList.add('active'); $('newGameBtn').style.display = 'none'; }
+
+  $('soundBtn').addEventListener('click', () => {
+    soundOn = !soundOn;
+    try { localStorage.setItem('vam-sound', soundOn ? '1' : '0'); } catch (e) {}
+    $('soundBtn').textContent = soundOn ? '🔔 Sound' : '🔕 Muted';
+  });
+  $('soundBtn').textContent = soundOn ? '🔔 Sound' : '🔕 Muted';
+  $('rulesToggle').addEventListener('click', () => $('rulesPanel').classList.toggle('open'));
+
+  /* ================= ONLINE (NETWORK) ================= */
+  function escapeHtml(str) { return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function netStatus(t) { const el = $('netStatus'); if (el) el.textContent = t; }
+  function netConnect() {
+    if (net.ws && (net.ws.readyState === 0 || net.ws.readyState === 1)) return;
+    const proto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+    let server = '';
+    try { server = new URLSearchParams(location.search).get('server') || ''; } catch (e) {}
+    try {
+      net.ws = new WebSocket(server || (proto + location.host));
+    } catch (e) { netStatus('Could not connect — start the game server first'); return; }
+    net.ws.onopen = () => {
+      netStatus('● Connected');
+      if (net.pending) { netSend(net.pending); net.pending = null; }
+      else if (net.room) netSend({ type: 'rejoin', code: net.room, name: net.name });
+    };
+    net.ws.onmessage = ev => {
+      let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+      netOnMessage(m);
+    };
+    net.ws.onclose = () => {
+      net.ws = null;
+      if (net.room && net.started) { netStatus('○ Disconnected — reconnecting…'); setTimeout(netConnect, 1500); }
+      else netStatus('○ Disconnected');
+    };
+    net.ws.onerror = () => {};
+  }
+  function netSend(o) {
+    if (net.ws && net.ws.readyState === 1) { net.ws.send(JSON.stringify(o)); return; }
+    net.pending = o;
+    if (!net.ws || net.ws.readyState === 3) netConnect();
+    netStatus('Connecting…');
+  }
+  function netOnMessage(m) {
+    if (m.type === 'err') {
+      toast('⚠ ' + m.msg, 3400);
+      if (net.mode === 'online' && ui.busy) { ui.busy = false; refreshHighlights(); } // un-freeze the board
+      return;
+    }
+    if (m.type === 'lobby') { netLobby(m); return; }
+    if (m.type === 'state') { applySnapshot(m); return; }
+  }
+  function netLobby(m) {
+    net.room = m.room; net.seat = m.seat; net.host = m.host; net.players = m.players; net.started = m.started;
+    try { sessionStorage.setItem('vam-room', net.room); sessionStorage.setItem('vam-name', net.name); } catch (e) {}
+    $('netLobby').style.display = '';
+    $('lobbyCode').textContent = m.room;
+    $('lobbyPlayers').innerHTML = m.players.map(p => {
+      const emoji = p.side === 'vish' ? '🕷️' : '🏃';
+      const label = p.side === 'vish' ? 'Vish' : 'Runners';
+      return '<div style="display:flex;align-items:center;gap:8px">' + emoji + ' <b>' + escapeHtml(p.name) + '</b> <i style="color:var(--text-dim)">(' + label + ')</i>' + (p.seat === m.seat ? ' <i style="color:var(--text-dim)">(you)</i>' : '') + '</div>';
+    }).join('');
+    const ready = m.players.length >= 2;
+    $('lobbyHint').textContent = m.host
+      ? (ready ? 'Both sides are seated — start when ready!' : 'Waiting for the other player (' + m.players.length + '/2)…')
+      : (m.started ? 'The chase is on…' : 'Waiting for the host to begin…');
+    $('netStartBtn').style.display = m.host ? '' : 'none';
+    $('netStartBtn').disabled = !ready;
+    $('lobbyShare').textContent = 'Share: ' + location.href.split('?')[0] + '?room=' + m.room;
+    $('roomChip').style.display = '';
+    $('roomChip').textContent = '🟢 Room ' + m.room + ' · ' + m.players.length + '/2';
+  }
+
+  function applySnapshot(s) {
+    net.room = s.room; net.seat = s.seat; net.host = s.host; net.mySide = s.mySide;
+    try { sessionStorage.setItem('vam-room', net.room); sessionStorage.setItem('vam-name', net.name); } catch (e) {}
+    if (!net.started) {
+      net.started = true;
+      $('setupScreen').classList.remove('active');
+      $('gameScreen').classList.add('active');
+      $('newGameBtn').style.display = '';
+      $('winOverlay').classList.remove('show');
+      $('log').innerHTML = '';
+    }
+    state = R.createGame({ names: s.names || ['Runners', 'Vish'], opts: {} });
+    state.vish = s.vish;
+    state.runners = s.runners.map((r, i) => ({ id: i, cell: r.cell, statue: r.statue }));
+    state.turn = s.turn;
+    state.round = s.round;
+    state.over = s.over;
+    state.winner = s.winner;
+    ui = { busy: false, sel: null, selRunner: null, targets: [] };
+    const box = $('log');
+    box.innerHTML = '';
+    if (s.log) {
+      for (const e of s.log) {
+        const d = document.createElement('div');
+        d.className = 'lg';
+        d.innerHTML = '<span style="color:' + (e.cls === 'gold' ? 'var(--gold-bright)' : 'var(--text-dim)') + '">' + e.html + '</span>';
+        box.appendChild(d);
+      }
+      box.scrollTop = box.scrollHeight;
+    }
+    renderBoard();
+    renderPanel();
+    netAnimate(s.lastAction);
+    if (s.over && s.winner !== null) {
+      if (!net.winShown) { net.winShown = true; showWin(); }
+    } else {
+      net.winShown = false;
+    }
+  }
+
+  function netAnimate(a) {
+    if (!a) return;
+    if (a.type === 'runner') {
+      sfxMove();
+      if (a.freed && a.freed.length > 0) sfxAmrit();
+      netGlide(a.from, a.to);
+    } else if (a.type === 'vish') {
+      sfxMove();
+      if (a.captured !== null && a.captured !== undefined) sfxFreeze();
+      netGlide(a.from, a.to);
+    }
+  }
+  function netGlide(from, to) {
+    const el = boardSvg.querySelector('.pt[data-p="' + to + '"] .piece');
+    if (!el) return;
+    const [x1, y1] = state.PTS[from];
+    const [x2, y2] = state.PTS[to];
+    el.style.transition = 'none';
+    el.style.transform = 'translate(' + (x1 - x2) + ',' + (y1 - y2) + ')';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      el.style.transition = 'transform .45s cubic-bezier(.34,1.3,.64,1)';
+      el.style.transform = 'translate(0,0)';
+    }));
+  }
+
+  function netLeave() {
+    netSend({ type: 'leave' });
+    netReset();
+    toSetup();
+  }
+  function netReset() {
+    try { sessionStorage.removeItem('vam-room'); sessionStorage.removeItem('vam-name'); } catch (e) {}
+    net.pending = null;
+    net.room = null; net.seat = -1; net.host = false; net.players = []; net.started = false; net.winShown = false; net.mySide = null;
+    $('netLobby').style.display = 'none';
+    $('netStatus').textContent = '';
+    $('roomChip').style.display = 'none';
+    $('winOverlay').classList.remove('show');
+  }
+
+  $('netHostBtn').addEventListener('click', () => {
+    const name = $('netName').value.trim() || (sideChoice === 'vish' ? 'The Poison' : 'The Runners');
+    net.name = name;
+    netSend({ type: 'host', name, side: sideChoice, game: 'vishamrit' });
+  });
+  $('netJoinBtn').addEventListener('click', () => {
+    const code = $('netCode').value.trim().toUpperCase();
+    if (code.length < 4) { toast('Enter the 4-letter room code'); return; }
+    const name = $('netName').value.trim() || 'Guest';
+    net.name = name;
+    netSend({ type: 'join', code, name });
+  });
+  $('netStartBtn').addEventListener('click', () => netSend({ type: 'start' }));
+  $('netLeaveBtn').addEventListener('click', netLeave);
+  $('netCode').addEventListener('keydown', e => { if (e.key === 'Enter') $('netJoinBtn').click(); });
+
+  (function () {
+    const q = new URLSearchParams(location.search);
+    const room = q.get('room');
+    let savedRoom = null, savedName = '';
+    try { savedRoom = sessionStorage.getItem('vam-room'); savedName = sessionStorage.getItem('vam-name') || ''; } catch (e) {}
+    if (room) { $('netCode').value = room.toUpperCase(); setMode('online'); $('netName').focus(); }
+    else if (savedRoom) {
+      net.room = savedRoom; net.name = savedName;
+      setMode('online');
+      $('netName').value = savedName;
+      netConnect();
+    }
+  })();
+
+  /* ================= GAME START ================= */
+  function startGame() {
+    const names = mode === 'local' ? ['Runners', 'Vish'] : (mode === 'runners' ? ['You', 'Computer'] : ['Computer', 'You']);
+    state = R.createGame({ names, opts: {} });
+    ui = { busy: false, sel: null, selRunner: null, targets: [] };
+    $('setupScreen').classList.remove('active');
+    $('gameScreen').classList.add('active');
+    $('newGameBtn').style.display = '';
+    $('winOverlay').classList.remove('show');
+    $('log').innerHTML = '';
+    renderBoard();
+    renderPanel();
+    log('The poison hunts — <b>1 Vish</b> chases <b>3 runners</b>.', 'gold');
+    nextTurn();
+  }
+
+  /* ================= BOARD RENDERING ================= */
+  function renderBoard() {
+    const g = state;
+    let s = '';
+    s += '<defs>' +
+      '<linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#fdf9ee"/><stop offset="1" stop-color="#efe6cf"/>' +
+      '</linearGradient>' +
+      '</defs>';
+    s += '<rect x="1.5" y="1.5" width="97" height="97" rx="8" fill="url(#bgGrad)" stroke="#8a7a55" stroke-width="1.4"/>';
+    // the 49 square tiles (checkerboard)
+    for (let p = 0; p < g.N * g.N; p++) {
+      const [x, y] = g.PTS[p];
+      const r = Math.floor(p / g.N), c = p % g.N;
+      const shade = (r + c) % 2 === 0 ? '#f5eeda' : '#efe5ca';
+      s += '<rect x="' + (x - 6.25) + '" y="' + (y - 6.25) + '" width="12.5" height="12.5" fill="' + shade + '" stroke="#d8cba6" stroke-width="0.4"/>';
+    }
+    // cells — the transparent square makes the WHOLE cell clickable
+    for (let p = 0; p < g.N * g.N; p++) {
+      const [x, y] = g.PTS[p];
+      s += '<g class="pt" data-p="' + p + '" transform="translate(' + x + ',' + y + ')">';
+      s += '<rect x="-6.25" y="-6.25" width="12.5" height="12.5" fill="transparent"/>';
+      if (p === g.vish) s += vishSVG();
+      const runner = g.runners.find(r => r.cell === p);
+      if (runner) s += runnerSVG(runner);
+      s += '</g>';
+    }
+    boardSvg.innerHTML = s;
+    boardSvg.querySelectorAll('.pt').forEach(el => el.addEventListener('click', () => onCellClick(Number(el.dataset.p))));
+    refreshHighlights();
+  }
+
+  function vishSVG() {
+    return '<g class="piece vish">' +
+      '<circle r="5" fill="#6d1f3c" stroke="#3b1a2b" stroke-width="1"/>' +
+      '<circle r="3.6" fill="none" stroke="#a33a5e" stroke-width="0.6"/>' +
+      '<path d="M-1.2-1.2 L1.2 1.2 M1.2-1.2 L-1.2 1.2" stroke="#f2d68a" stroke-width="1.1" stroke-linecap="round"/>' +
+      '</g>';
+  }
+
+  function runnerSVG(runner) {
+    const colors = ['#e8a93d', '#3fa9a0', '#d96c4a'];
+    const c = colors[runner.id % colors.length];
+    const frozen = runner.statue;
+    const fill = frozen ? '#8a8f88' : c;
+    const stroke = frozen ? '#5f6460' : '#5a4320';
+    return '<g class="piece runner r' + runner.id + (frozen ? ' frozen' : '') + '">' +
+      '<circle r="4.6" fill="' + fill + '" stroke="' + stroke + '" stroke-width="0.9"/>' +
+      (frozen
+        ? '<path d="M-2 -1.5 L0 0.5 M0.5 -2 L2.5 0 M-1 1.5 L1 3.5" stroke="#c9cdc6" stroke-width="0.7" stroke-linecap="round"/>'
+        : '<circle r="2.2" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="0.5"/>' +
+          '<circle r="0.9" fill="#fff" opacity=".85"/>') +
+      '</g>';
+  }
+
+  /* ================= HIGHLIGHTS ================= */
+  function refreshHighlights() {
+    boardSvg.querySelectorAll('.pt').forEach(el => {
+      const p = Number(el.dataset.p);
+      el.classList.remove('selected');
+      el.querySelectorAll('.target-ring').forEach(r => r.remove());
+      if (ui.sel !== null && p === ui.sel) el.classList.add('selected');
+    });
+    for (const t of ui.targets) {
+      const el = boardSvg.querySelector('.pt[data-p="' + t + '"]');
+      if (!el) continue;
+      const ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('cx', 0); ring.setAttribute('cy', 0);
+      ring.setAttribute('r', 6);
+      ring.setAttribute('fill', 'none');
+      ring.setAttribute('stroke', '#f2d68a');
+      ring.setAttribute('stroke-width', 1);
+      ring.setAttribute('class', 'target-ring');
+      el.appendChild(ring);
+    }
+  }
+
+  /* ================= PANEL ================= */
+  function renderPanel() {
+    const s = state;
+    const freeCount = s.runners.filter(r => !r.statue).length;
+    const statueCount = s.runners.filter(r => r.statue).length;
+    $('statRunners').textContent = freeCount;
+    $('statStatues').textContent = statueCount;
+    $('barRunners').style.width = (freeCount / 3) * 100 + '%';
+    $('barStatues').style.width = (statueCount / 3) * 100 + '%';
+
+    const runnersHuman = isHumanRunners();
+    const vishHuman = isHumanVish();
+    const runnersTurn = s.turn === 0;
+    const vishTurn = s.turn === 1;
+    $('turnChip').textContent = runnersTurn ? '🏃' : '🕷️';
+    $('turnName').textContent = (runnersTurn ? s.names[0] : s.names[1]) + "'s turn";
+    $('turnSub').textContent = runnersTurn ? 'Runners flee or free with Amrit' : 'Vish hunts — leap to touch!';
+
+    const cards = [
+      {
+        dot: '#e8a93d', name: s.names[0] + nameTag(0),
+        sub: 'Runners · ' + freeCount + ' free', active: runnersTurn && runnersHuman
+      },
+      {
+        dot: '#6d1f3c', name: s.names[1] + nameTag(1),
+        sub: 'Vish · ' + statueCount + ' frozen', active: vishTurn && vishHuman
+      }
+    ];
+    function nameTag(pl) {
+      if (net.mode === 'online') return net.mySide === (pl === 0 ? 'runners' : 'vish') ? ' (you)' : '';
+      if (mode === 'local') return '';
+      return (mode === 'runners' && pl === 0) || (mode === 'vish' && pl === 1) ? ' (you)' : ' (computer)';
+    }
+    $('playerCards').innerHTML = cards.map(c =>
+      '<div class="player-card' + (c.active ? ' active' : '') + '">' +
+        '<div class="p-head"><span class="p-dot" style="background:' + c.dot + ';border:1px solid rgba(0,0,0,.35)"></span>' +
+        '<span class="p-name">' + c.name + '</span><span class="p-sub">' + c.sub + '</span></div></div>'
+    ).join('');
+
+    let hint = '';
+    if (s.over) hint = '';
+    else if (net.mode === 'online') {
+      const myTurn = (runnersTurn && runnersHuman) || (vishTurn && vishHuman);
+      hint = myTurn
+        ? (runnersTurn ? 'Tap a runner, then a glowing square to move — touch a statue to free it.' : 'Tap a glowing square to leap as Vish.')
+        : 'Waiting for ' + s.names[s.turn] + '…';
+    }
+    else if (runnersTurn) {
+      hint = runnersHuman ? 'Tap a runner, then a glowing square to move — touch a statue to free it.' : 'The runners are scattering…';
+    } else {
+      hint = vishHuman ? 'Tap a glowing square to leap as Vish.' : 'The poison hunts…';
+    }
+    $('hintBar').textContent = hint;
+  }
+
+  function isHumanRunners() {
+    if (net.mode === 'online') return net.mySide === 'runners';
+    return mode === 'runners' || mode === 'local';
+  }
+  function isHumanVish() {
+    if (net.mode === 'online') return net.mySide === 'vish';
+    return mode === 'vish' || mode === 'local';
+  }
+
+  function log(html, cls) {
+    const el = document.createElement('div');
+    el.className = 'lg';
+    el.innerHTML = '<span style="color:' + (cls === 'gold' ? 'var(--gold-bright)' : 'var(--text-dim)') + '">' + html + '</span>';
+    const box = $('log');
+    box.appendChild(el);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function toast(t, ms) {
+    const el = $('toast');
+    el.textContent = t;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), ms || 2600);
+  }
+
+  /* ================= TURN LOGIC ================= */
+  function nextTurn() {
+    if (state.over) return;
+    ui.busy = false;
+    renderPanel();
+
+    const humanTurn = state.turn === 0 ? isHumanRunners() : isHumanVish();
+    if (humanTurn) return;
+
+    setTimeout(() => {
+      ui.busy = true;
+      const mv = state.turn === 0 ? R.aiRunners(state) : R.aiVish(state);
+      if (!mv) {
+        // No legal move — a full freeze has ended the game; nothing to pass.
+        return;
+      }
+      animateMove(mv, () => {
+        logMove(mv);
+        finishTurn();
+      });
+    }, 480);
+  }
+
+  function logMove(mv) {
+    const plName = state.names[state.turn];
+    if (mv.type === 'vish') {
+      if (mv.captures !== null && mv.captures !== undefined) {
+        log('🕷️ <b>' + plName + '</b> touches a runner — <b>Statue!</b>', 'gold');
+      } else {
+        log('🕷️ <b>' + plName + '</b> prowls to square ' + mv.to + '.');
+      }
+    } else {
+      if (mv.frees && mv.frees.length > 0) {
+        log('✨ <b>' + plName + '</b> cries “Amrit!” — ' + mv.frees.length + ' statue' + (mv.frees.length > 1 ? 's' : '') + ' freed!', 'gold');
+      } else {
+        log('🏃 <b>' + plName + '</b> steps to square ' + mv.to + '.');
+      }
+    }
+  }
+
+  function finishTurn() {
+    if (R.checkWin(state)) {
+      renderPanel();
+      showWin();
+      return;
+    }
+    if (state.turn === 1) state.round++;
+    if (R.checkWin(state)) {
+      renderPanel();
+      showWin();
+      return;
+    }
+    state.turn = 1 - state.turn;
+    renderPanel();
+    setTimeout(nextTurn, 320);
+  }
+
+  /* ================= CLICK HANDLING ================= */
+  function onCellClick(p) {
+    if (state.over || ui.busy) return;
+    const s = state;
+    const humanTurn = s.turn === 0 ? isHumanRunners() : isHumanVish();
+    if (!humanTurn) return;
+
+    // ---- runners turn: select one of the three runners ----
+    if (s.turn === 0) {
+      const runner = s.runners.find(r => r.cell === p);
+      if (ui.selRunner === null) {
+        if (!runner || runner.statue) { sfxDeny(); shakeBoard(); return; }
+        const moves = R.getRunnerMoves(s, runner.id);
+        if (!moves.length) { sfxDeny(); toast('That runner is trapped!'); shakeBoard(); return; }
+        ui.selRunner = runner.id;
+        ui.sel = p;
+        ui.targets = uniqueTargets(moves);
+        refreshHighlights();
+        return;
+      }
+      // moving the selected runner
+      if (p === ui.sel) { ui.selRunner = null; ui.sel = null; ui.targets = []; refreshHighlights(); return; }
+      if (ui.targets.indexOf(p) === -1) {
+        if (runner && !runner.statue && runner.id !== ui.selRunner) {
+          const moves = R.getRunnerMoves(s, runner.id);
+          if (moves.length) { ui.selRunner = runner.id; ui.sel = p; ui.targets = uniqueTargets(moves); refreshHighlights(); return; }
+        }
+        sfxDeny(); shakeBoard(); return;
+      }
+      const candidates = R.getRunnerMoves(s, ui.selRunner).filter(m => m.to === p);
+      if (!candidates.length) { sfxDeny(); shakeBoard(); return; }
+      const mv = candidates[0];
+      ui.selRunner = null; ui.sel = null; ui.targets = [];
+      ui.busy = true;
+      if (net.mode === 'online') { netSend({ type: 'move', move: mv }); return; }
+      animateMove(mv, () => { logMove(mv); finishTurn(); });
+      return;
+    }
+
+    // ---- vish turn: pick a landing square ----
+    const moves = R.getVishMoves(s);
+    if (ui.sel === null) {
+      ui.sel = s.vish;
+      ui.targets = uniqueTargets(moves);
+      refreshHighlights();
+      return;
+    }
+    if (p === ui.sel) { ui.sel = null; ui.targets = []; refreshHighlights(); return; }
+    if (ui.targets.indexOf(p) === -1) { sfxDeny(); shakeBoard(); return; }
+    const candidates = moves.filter(m => m.to === p);
+    if (!candidates.length) { sfxDeny(); shakeBoard(); return; }
+    const mv = candidates[0];
+    ui.sel = null; ui.targets = [];
+    ui.busy = true;
+    if (net.mode === 'online') { netSend({ type: 'move', move: mv }); return; }
+    animateMove(mv, () => { logMove(mv); finishTurn(); });
+  }
+
+  function uniqueTargets(moves) {
+    const seen = new Set();
+    const out = [];
+    for (const m of moves) { if (!seen.has(m.to)) { seen.add(m.to); out.push(m.to); } }
+    return out;
+  }
+
+  /* ================= ANIMATIONS ================= */
+  function animateMove(move, done) {
+    if (move.type === 'vish') {
+      if (move.captures !== null && move.captures !== undefined) sfxFreeze(); else sfxMove();
+    } else {
+      if (move.frees && move.frees.length > 0) sfxAmrit(); else sfxMove();
+    }
+    R.applyMove(state, move);
+    renderBoard();
+    const el = boardSvg.querySelector('.pt[data-p="' + move.to + '"] .piece');
+    if (el) {
+      const [x1, y1] = state.PTS[move.from];
+      const [x2, y2] = state.PTS[move.to];
+      el.style.transition = 'none';
+      el.style.transform = 'translate(' + (x1 - x2) + ',' + (y1 - y2) + ')';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'transform .45s cubic-bezier(.34,1.3,.64,1)';
+        el.style.transform = 'translate(0,0) scale(1.06)';
+      }));
+    }
+    // highlight the released statue with an amrit glow
+    if (move.frees && move.frees.length > 0) {
+      move.frees.forEach((id, i) => {
+        setTimeout(() => {
+          const rc = state.runners[id];
+          const pEl = boardSvg.querySelector('.pt[data-p="' + rc.cell + '"] .piece');
+          if (pEl) { pEl.classList.add('amrit'); setTimeout(() => pEl.classList.remove('amrit'), 1300); }
+        }, 250 + i * 220);
+      });
+    }
+    setTimeout(() => { renderBoard(); done && done(); }, 460);
+  }
+
+  function shakeBoard() { boardSvg.classList.remove('shake'); void boardSvg.offsetWidth; boardSvg.classList.add('shake'); }
+
+  /* ================= WIN ================= */
+  function showWin() {
+    const s = state;
+    const runnersWon = s.winner === 0;
+    $('winCrown').textContent = runnersWon ? '🏃' : '🕷️';
+    $('winTitle').textContent = runnersWon ? 'Amrit Prevails!' : 'Vish Wins!';
+    $('winName').innerHTML = runnersWon
+      ? '<b>' + escapeHtml(s.names[0]) + '</b> survived ' + s.round + ' rounds — the poison could not freeze them all!'
+      : '<b>' + escapeHtml(s.names[1]) + '</b> froze all three runners to stone. The chase is over!';
+    $('winOverlay').classList.add('show');
+    if (runnersWon) sfxWin(); else sfxLose();
+    confetti();
+  }
+
+  function confetti() {
+    const colors = ['#f2d68a', '#e8a93d', '#7ce38b', '#3fa9a0', '#d96c4a', '#d4af37'];
+    for (let i = 0; i < 90; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.background = colors[i % colors.length];
+      el.style.animationDuration = (2.2 + Math.random() * 2) + 's';
+      el.style.animationDelay = Math.random() * 0.8 + 's';
+      el.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 5200);
+    }
+  }
+
+  /* expose applyMove helper used by animateMove */
+  R.applyMove = function (state, move) {
+    if (move.type === 'vish') return VishAmritRules.applyVishMove(state, move);
+    return VishAmritRules.applyRunnerMove(state, move);
+  };
+})();
+</script>
+</body>
+</html>

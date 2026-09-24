@@ -1,0 +1,212 @@
+@import "tailwindcss" source(none);
+
+/*
+|--------------------------------------------------------------------------
+| Pakka Patriot — design system
+|--------------------------------------------------------------------------
+|
+| Ported from the Vite/React front-end (src/index.css) so the Laravel-rendered
+| pages share the exact same fonts, colours and base styles.
+|
+| Note: @source points Tailwind at the Blade templates and the front-end
+| scripts (a few of which build markup, e.g. the toast and the game server
+| badge). Without it the scanner would also crawl vendor/ and the Bagisto
+| packages, which slows every build.
+|
+*/
+
+@source '../../resources/views';
+@source '../../resources/js';
+
+@font-face {
+    font-family: 'Caveat Brush';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/Caveat-Brush.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/fonts/Inter.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400 500;
+    font-display: swap;
+    src: url('/fonts/JetBrains-Mono.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+    src: url('/fonts/Space-Grotesk.woff2') format('woff2');
+}
+
+@theme {
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Space Grotesk", sans-serif;
+    --font-brush: "Caveat Brush", cursive;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    --color-brand-blue: #0A2240;
+    --color-brand-orange: #F6B828;
+    --color-brand-cream: #FCFAF5;
+    --color-brand-sage: #587760;
+    --color-brand-yellow: #F6B828;
+
+    --animate-bounce-horizontal: bounce-horizontal 2s ease-in-out infinite;
+}
+
+@keyframes bounce-horizontal {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(8px); }
+}
+
+@layer base {
+    body {
+        background-color: var(--color-brand-cream);
+        color: var(--color-brand-blue);
+        font-family: var(--font-sans);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #FCFAF5;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #E2DFD5;
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #C8C5B9;
+    }
+}
+
+@layer components {
+    /*
+     * Story body — the article HTML comes from the blog admin (rich text), so it
+     * needs its own type scale. The React front-end relied on `prose` classes,
+     * but @tailwindcss/typography was never installed there, so this replaces
+     * what was effectively unstyled markup with something that matches the
+     * brand.
+     */
+    .pp-article {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #2f445a;
+
+        & > * + * {
+            margin-top: 1.25rem;
+        }
+
+        & h1,
+        & h2,
+        & h3,
+        & h4 {
+            font-family: var(--font-display);
+            color: var(--color-brand-blue);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+        }
+
+        & h1 { font-size: 1.75rem; margin-top: 2rem; }
+        & h2 { font-size: 1.5rem; margin-top: 2rem; }
+        & h3 { font-size: 1.25rem; margin-top: 1.75rem; }
+        & h4 { font-size: 1.125rem; margin-top: 1.5rem; }
+
+        & a {
+            color: var(--color-brand-orange);
+            text-decoration: underline;
+        }
+
+        & strong {
+            color: var(--color-brand-blue);
+        }
+
+        & ul,
+        & ol {
+            padding-left: 1.5rem;
+        }
+
+        & ul { list-style: disc; }
+        & ol { list-style: decimal; }
+
+        & li + li { margin-top: 0.375rem; }
+
+        & img,
+        & iframe {
+            max-width: 100%;
+            border-radius: 0.75rem;
+            margin: 2rem auto;
+            display: block;
+            height: auto;
+        }
+
+        & iframe { aspect-ratio: 16 / 9; width: 100%; }
+
+        & blockquote {
+            border-left: 4px solid var(--color-brand-orange);
+            background: #faf6ec;
+            border-radius: 0 0.75rem 0.75rem 0;
+            padding: 1rem 1.25rem;
+            font-style: italic;
+            color: #4e637a;
+        }
+
+        & pre {
+            background: #0a1a2e;
+            color: #fcfaf5;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+        }
+
+        & code {
+            background: #f0ebe0;
+            border-radius: 0.25rem;
+            padding: 0.125rem 0.375rem;
+            font-family: var(--font-mono);
+            font-size: 0.875em;
+        }
+
+        & pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        & table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        & th,
+        & td {
+            border: 1px solid #e7e0d0;
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+    }
+}
+
+/* Hidden scrollbars for the horizontal carousels / sub-navbar. */
+@utility scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

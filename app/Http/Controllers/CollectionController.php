@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\CollectionItem;
-use App\Models\CreateActivity;
-use App\Models\EBook;
-use App\Models\Game;
+use App\Support\Gradient;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class CollectionController extends Controller
@@ -141,26 +141,74 @@ class CollectionController extends Controller
 
     /**
      * Convert a Tailwind-style accent ("from-[#AABBCC] to-[#DDEEFF]") to an inline gradient.
+     *
+     * @deprecated Use App\Support\Gradient::css() from views instead.
      */
     public static function gradient(?string $accent): string
     {
-        if ($accent && preg_match_all('/#([0-9a-fA-F]{3,8})/', $accent, $m) && count($m[1]) >= 2) {
-            return 'linear-gradient(135deg, #' . $m[1][0] . ', #' . $m[1][1] . ')';
-        }
-
-        return 'linear-gradient(135deg, #0A2240, #1A3A5C)';
+        return Gradient::css($accent);
     }
 
-    public function browse(string $type): View
+    public function browse(Request $request, string $type): View
     {
         if (! isset($this->collections[$type])) {
             abort(404);
         }
 
         $meta = $this->collections[$type];
-        $items = CollectionItem::ofType($type)->get();
 
-        return view('collections.browse', compact('type', 'meta', 'items'));
+        // Filtering is server-side (like the blog listing) so every filtered
+        // view has its own linkable, crawlable URL.
+        $search = trim((string) $request->query('q', ''));
+        $category = (string) $request->query('category', '');
+        $hasCategory = $category !== '' && collect($meta['categories'])->contains(fn ($c) => $c['id'] === $category);
+
+        if (! $hasCategory) {
+            $category = '';
+        }
+
+        $items = CollectionItem::ofType($type)->orderBy('name')->get();
+
+        // Cards grouped under category headers — with a defensive bucket for
+        // items whose category is missing from the metadata, so none vanish.
+        $sections = $this->sections($items, $meta);
+
+        $filtered = null;
+        if ($search !== '') {
+            $filtered = $items->filter(fn (CollectionItem $item) => $this->matches($item, $search))->values();
+        }
+
+        return view('collections.browse', [
+            'type' => $type,
+            'meta' => $meta,
+            'items' => $items,
+            'sections' => $sections,
+            'filtered' => $filtered,
+            'search' => $search,
+            'activeCategory' => $category,
+            'grouped' => (bool) ($meta['groupByCategory'] ?? false) && $search === '',
+        ]);
+    }
+
+    /**
+     * Creations browse page — /create/creations.
+     *
+     * The creations collection has no /{type} URL of its own (that path is the
+     * maker's space), so it gets its own entry points rather than a route
+     * default: injecting `type` as a default would land it in the wrong
+     * position of the positional argument list.
+     */
+    public function browseCreate(Request $request): View
+    {
+        return $this->browse($request, 'create');
+    }
+
+    /**
+     * One creation's page — /create/{slug}.
+     */
+    public function showCreate(string $slug): View
+    {
+        return $this->show('create', $slug);
     }
 
     public function show(string $type, string $slug): View
@@ -171,19 +219,70 @@ class CollectionController extends Controller
 
         $meta = $this->collections[$type];
         $item = CollectionItem::ofType($type)->where('slug', $slug)->firstOrFail();
-        $related = CollectionItem::ofType($type)->where('slug', '!=', $slug)->inRandomOrder()->limit(3)->get();
+
+        // Related: same category first, then the rest — each alphabetical.
+        $related = CollectionItem::ofType($type)
+            ->where('slug', '!=', $slug)
+            ->orderByRaw('category = ? desc', [$item->category])
+            ->orderBy('name')
+            ->limit(3)
+            ->get();
 
         return view('collections.show', compact('type', 'meta', 'item', 'related'));
     }
 
-    public function games(): View
+    /**
+     * Group a collection's items under its category headers.
+     *
+     * @param  Collection<int, CollectionItem>  $items
+     * @param  array<string, mixed>  $meta
+     * @return Collection<int, array{id: string, label: string, items: Collection<int, CollectionItem>}>
+     */
+    protected function sections(Collection $items, array $meta): Collection
     {
-        return view('collections.games', ['games' => Game::orderBy('title')->get()]);
+        $sections = collect($meta['categories'])
+            ->map(fn ($cat) => [
+                'id' => $cat['id'],
+                'label' => $cat['label'],
+                'items' => $items->where('category', $cat['id'])->values(),
+            ])
+            ->filter(fn ($section) => $section['items']->isNotEmpty())
+            ->values();
+
+        $listed = $sections->pluck('id');
+        $orphaned = $items->reject(fn (CollectionItem $item) => $listed->contains($item->category))->values();
+
+        if ($orphaned->isNotEmpty()) {
+            $sections->push(['id' => '__other__', 'label' => 'More to Explore', 'items' => $orphaned]);
+        }
+
+        return $sections;
     }
 
-    public function ebooks(): View
+    /**
+     * Free-text match over the fields the React browse page searched.
+     */
+    protected function matches(CollectionItem $item, string $search): bool
     {
-        return view('collections.ebooks', ['ebooks' => EBook::orderBy('title')->get()]);
+        $haystack = mb_strtolower(implode(' ', array_filter([
+            $item->name,
+            $item->native_name,
+            $item->tagline,
+            $item->summary,
+            $item->attribution,
+        ])));
+
+        return str_contains($haystack, mb_strtolower($search));
+    }
+
+    /**
+     * Metadata for a collection (used by the shared card partial).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function meta(?string $type): ?array
+    {
+        return $type !== null ? ($this->collections[$type] ?? null) : null;
     }
 
     public function activities(): View
