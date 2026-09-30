@@ -40,7 +40,7 @@ class PlayController extends Controller
 
     public function index(): View
     {
-        return view('play.index', ['games' => $this->games()]);
+        return view('play.index', ['games' => self::games()]);
     }
 
     public function show(Request $request, string $game): View
@@ -86,9 +86,12 @@ class PlayController extends Controller
     /**
      * Every board, in display order.
      *
+     * Public and static so the homepage can offer the same list without
+     * duplicating the running order above.
+     *
      * @return array<int, Game>
      */
-    protected function games(): array
+    public static function games(): array
     {
         $games = Game::all()->all();
 

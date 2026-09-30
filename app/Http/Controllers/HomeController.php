@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CollectionItem;
 use App\Services\BlogFeed;
 use App\Services\ProductCatalog;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -14,15 +16,36 @@ class HomeController extends Controller
     ) {}
 
     /**
-     * The Pakka Patriot homepage: hero, pillars, What Pakka Loves, store,
-     * latest stories and the newsletter block.
+     * The Pakka Patriot homepage: hero, pillars, latest stories, the games
+     * showcase, the recent-picks columns, store and the newsletter block.
      */
     public function index(): View
     {
         return view('home', [
             'posts' => $this->safe(fn () => $this->blogFeed->latest(12), []),
             'products' => $this->safe(fn () => $this->products->all(50), []),
+            'games' => $this->safe(fn () => PlayController::games(), []),
+            'people' => $this->safe(fn () => $this->recent('people'), []),
+            'places' => $this->safe(fn () => $this->recent('places'), []),
+            'culture' => $this->safe(fn () => $this->recent('culture'), []),
         ]);
+    }
+
+    /**
+     * The newest additions to a collection, for the homepage's pick columns.
+     *
+     * The id tiebreak keeps the pick stable: the seeded rows share a created_at,
+     * so ordering on the timestamp alone would let the strip reshuffle.
+     *
+     * @return Collection<int, CollectionItem>
+     */
+    protected function recent(string $type): Collection
+    {
+        return CollectionItem::ofType($type)
+            ->latest()
+            ->orderByDesc('id')
+            ->limit(4)
+            ->get();
     }
 
     /**
