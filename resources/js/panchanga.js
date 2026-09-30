@@ -119,7 +119,12 @@ export default function initPanchanga() {
         compute();
     };
 
-    if (navigator.geolocation) {
+    /*
+     * Only ask for a location when the host opts in. The full /panchangam page
+     * sets data-panchanga-locate="auto"; the homepage's compact card does not,
+     * so it renders for the default coordinates without a permission prompt.
+     */
+    if (root.dataset.panchangaLocate === 'auto' && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(locate, () => {
             locationEl.textContent = 'Bangalore (default)';
             compute();

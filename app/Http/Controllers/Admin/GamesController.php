@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Game;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Webkul\Admin\Http\Controllers\Controller;
 
 class GamesController extends Controller
@@ -40,7 +40,7 @@ class GamesController extends Controller
     public function create()
     {
         return view('admin.games.create', [
-            'icons' => \App\Http\Controllers\Admin\CollectionItemAdminController::ICONS,
+            'icons' => CollectionItemAdminController::ICONS,
         ]);
     }
 
@@ -57,6 +57,7 @@ class GamesController extends Controller
             'description' => $validated['description'] ?? null,
             'path' => $this->normalizePath($validated['path'] ?? null),
             'tags' => $this->tagsToArray($request->input('tags')),
+            'image' => $this->resolveImage($request),
             'accent' => $validated['accent'] ?? null,
             'badge' => $validated['badge'] ?? null,
         ]);
@@ -75,7 +76,7 @@ class GamesController extends Controller
 
         return view('admin.games.edit', [
             'game' => $game,
-            'icons' => \App\Http\Controllers\Admin\CollectionItemAdminController::ICONS,
+            'icons' => CollectionItemAdminController::ICONS,
         ]);
     }
 
@@ -94,6 +95,7 @@ class GamesController extends Controller
             'description' => $validated['description'] ?? null,
             'path' => $this->normalizePath($validated['path'] ?? null),
             'tags' => $this->tagsToArray($request->input('tags')),
+            'image' => $this->resolveImage($request, $game),
             'accent' => $validated['accent'] ?? null,
             'badge' => $validated['badge'] ?? null,
         ]);
@@ -128,9 +130,45 @@ class GamesController extends Controller
             'description' => 'nullable',
             'path' => 'nullable|max:255',
             'tags' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:5120',
+            'remove_image' => 'nullable|boolean',
             'accent' => 'nullable|max:255',
             'badge' => 'nullable|max:255',
         ]);
+    }
+
+    /**
+     * Store the cover image sent with the form, replacing (and deleting) the
+     * previous one. Without an upload the current path is kept, unless the form
+     * asked to remove it.
+     */
+    protected function resolveImage(Request $request, ?Game $game = null): ?string
+    {
+        $current = $game?->image;
+
+        if ($request->hasFile('image')) {
+            $this->deleteImage($current);
+
+            return $request->file('image')->store('games', 'public');
+        }
+
+        if ($game && $request->boolean('remove_image')) {
+            $this->deleteImage($current);
+
+            return null;
+        }
+
+        return $current;
+    }
+
+    /**
+     * Delete a stored cover image from the public disk.
+     */
+    protected function deleteImage(?string $path): void
+    {
+        if ($path) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     /**

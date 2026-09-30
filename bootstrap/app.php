@@ -49,7 +49,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
     })
     ->withSchedule(function (Schedule $schedule) {
-        //
+        // Rebuild the /news cache each morning so the page always opens on
+        // today's headlines instead of the previous day's.
+        $schedule->command('news:refresh')->dailyAt('06:00')->withoutOverlapping();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

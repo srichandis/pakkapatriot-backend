@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Mail\NewsletterMail;
+use App\Models\JourneySubmission;
 use App\Models\NewsletterSubscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -35,29 +36,39 @@ class NewsletterController extends Controller
      */
     public function compose()
     {
-        $total = NewsletterSubscription::count();
+        $recipients = $this->leadRecipients();
 
         return view('admin.newsletter.compose', [
-            'total' => $total,
+            'recipients' => $recipients,
+            'total' => count($recipients),
         ]);
     }
 
     /**
-     * Send the newsletter to all subscribers.
+     * Send the newsletter to the recipients chosen in the compose form.
      */
     public function send(Request $request)
     {
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
-            'body'    => 'required|string',
+            'body' => 'required|string',
+            'recipients' => 'required|array|min:1',
+            'recipients.*' => 'required|email|max:255',
         ]);
 
-        $subscribers = NewsletterSubscription::all();
+        // De-duplicate case-insensitively (a lead can appear in both the
+        // newsletter and journey tables) and drop anything malformed.
+        $recipients = collect($validated['recipients'])
+            ->map(fn ($email) => trim((string) $email))
+            ->filter(fn ($email) => $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL))
+            ->unique(fn ($email) => mb_strtolower($email))
+            ->values();
 
-        if ($subscribers->isEmpty()) {
+        if ($recipients->isEmpty()) {
             return redirect()
                 ->route('admin.newsletter.compose')
-                ->with('error', 'No subscribers to send to.');
+                ->with('error', 'No valid recipients to send to.')
+                ->withInput();
         }
 
         $subject = $validated['subject'];
@@ -65,18 +76,18 @@ class NewsletterController extends Controller
         $sentCount = 0;
         $failedCount = 0;
 
-        foreach ($subscribers as $subscriber) {
+        foreach ($recipients as $email) {
             try {
-                Mail::to($subscriber->email)
+                Mail::to($email)
                     ->send(new NewsletterMail($subject, $body));
                 $sentCount++;
             } catch (\Throwable $e) {
                 $failedCount++;
-                \Log::error("Newsletter send failed for {$subscriber->email}: {$e->getMessage()}");
+                \Log::error("Newsletter send failed for {$email}: {$e->getMessage()}");
             }
         }
 
-        $message = "Newsletter sent to {$sentCount} subscriber(s).";
+        $message = "Newsletter sent to {$sentCount} recipient(s).";
         if ($failedCount > 0) {
             $message .= " {$failedCount} failed.";
         }
@@ -84,6 +95,26 @@ class NewsletterController extends Controller
         return redirect()
             ->route('admin.newsletter.index')
             ->with('success', $message);
+    }
+
+    /**
+     * Every email collected by the site's lead forms — the "Let's stay in
+     * touch!" newsletter form and the "Join the Journey" form — de-duplicated
+     * case-insensitively and sorted.
+     *
+     * @return array<int, string>
+     */
+    protected function leadRecipients(): array
+    {
+        return NewsletterSubscription::query()
+            ->pluck('email')
+            ->merge(JourneySubmission::query()->pluck('email'))
+            ->map(fn ($email) => trim((string) $email))
+            ->filter(fn ($email) => $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL))
+            ->unique(fn ($email) => mb_strtolower($email))
+            ->sort()
+            ->values()
+            ->all();
     }
 
     /**

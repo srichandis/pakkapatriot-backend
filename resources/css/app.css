@@ -68,6 +68,21 @@
 }
 
 @layer base {
+    /*
+     * Firefox for Android runs a text-inflation ("font boosting") algorithm on
+     * pages it does not treat as mobile-optimised, rendering the whole site
+     * noticeably larger than Chrome/Safari do. Tailwind's preflight only sets
+     * `-webkit-text-size-adjust: 100%`, which Firefox does not apply to that
+     * algorithm — its computed `-moz-text-size-adjust` stays `auto`. The layout
+     * is already fully responsive, so turn the algorithm off. Keep the -webkit-
+     * and unprefixed forms too so Safari/Chrome behave identically.
+     */
+    html {
+        -moz-text-size-adjust: none;
+        -webkit-text-size-adjust: none;
+        text-size-adjust: none;
+    }
+
     body {
         background-color: var(--color-brand-cream);
         color: var(--color-brand-blue);

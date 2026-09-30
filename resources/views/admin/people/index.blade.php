@@ -77,9 +77,21 @@
                         @forelse($people as $person)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <td class="px-4 py-3 text-sm text-gray-800 dark:text-white">
-                                    <div class="max-w-xs truncate font-medium">{{ $person->name }}</div>
-                                    <div class="text-xs text-gray-500 mt-0.5">
-                                        {{ $person->native_name ? $person->native_name . ' · ' : '' }}/{{ $person->slug }}
+                                    <div class="flex items-center gap-x-3">
+                                        @if ($person->image_url)
+                                            <img
+                                                src="{{ $person->image_url }}"
+                                                alt="{{ $person->name }}"
+                                                class="h-10 w-10 shrink-0 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                                            />
+                                        @endif
+
+                                        <div class="min-w-0">
+                                            <div class="max-w-xs truncate font-medium">{{ $person->name }}</div>
+                                            <div class="text-xs text-gray-500 mt-0.5">
+                                                {{ $person->native_name ? $person->native_name . ' · ' : '' }}/{{ $person->slug }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">

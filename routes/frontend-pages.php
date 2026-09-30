@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\ComingSoonController;
 use App\Http\Controllers\CreateController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\EBooksController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PlayController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShopController;
@@ -114,6 +117,36 @@ Route::permanentRedirect('/ebooks', '/stories')->name('ebooks');
 
 // The React front-end listed blog posts under /blogs; /blog is the Laravel URL.
 Route::permanentRedirect('/blogs', '/blog');
+
+/*
+| NEWS — headlines about the country's achievements.
+|
+| Collected from the RSS topics in config/news.php and cached; refreshed
+| daily by `news:refresh`.
+*/
+Route::get('/news', [NewsController::class, 'index'])->name('news');
+
+/*
+| DOWNLOADS — the printable library.
+|
+| The eleven material types are catalogued in config/downloads.php. Both the
+| hub and its category pages sit above the blog permalink catch-all, since
+| they are single-segment paths like any other page here.
+*/
+Route::get('/downloads', [DownloadController::class, 'index'])->name('downloads');
+Route::get('/downloads/{category}', [DownloadController::class, 'show'])->name('downloads.category');
+
+/*
+| COMING SOON — For Teachers, Apps and Resources.
+|
+| These three secondary-nav entries are announced but not built yet, so each
+| gets its own holding page. They used to point at pages that do exist
+| (/explore and /play); those pages stay reachable from the footer ("Explore",
+| "Fun Zone") and the header's GAMES entry, so only the nav links changed.
+*/
+Route::get('/for-teachers', [ComingSoonController::class, 'teachers'])->name('coming-soon.teachers');
+Route::get('/apps', [ComingSoonController::class, 'apps'])->name('coming-soon.apps');
+Route::get('/resources', [ComingSoonController::class, 'resources'])->name('coming-soon.resources');
 
 /*
 | Site-wide search — replaces Bagisto's storefront search page.

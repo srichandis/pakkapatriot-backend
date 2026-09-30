@@ -120,6 +120,50 @@
 
             <x-admin::form.control-group>
                 <x-admin::form.control-group.label>
+                    @lang('Cover image')
+                </x-admin::form.control-group.label>
+
+                @if ($item?->image_url)
+                    <img
+                        src="{{ $item->image_url }}"
+                        alt="{{ $item->title }}"
+                        class="mb-2.5 h-24 w-24 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                    />
+                @endif
+
+                <x-admin::form.control-group.control
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    :label="trans('Cover image')"
+                />
+
+                <x-admin::form.control-group.error control-name="image" />
+
+                @if ($item?->image)
+                    <div class="mt-2.5 flex items-center gap-x-2">
+                        <input
+                            type="checkbox"
+                            id="remove_image"
+                            name="remove_image"
+                            value="1"
+                            class="h-4 w-4 rounded border-gray-300 dark:border-gray-700"
+                            @checked(old('remove_image'))
+                        />
+
+                        <label
+                            for="remove_image"
+                            class="cursor-pointer text-xs text-gray-600 dark:text-gray-300"
+                        >
+                            @lang('Remove the current image')
+                        </label>
+                    </div>
+                @endif
+            </x-admin::form.control-group>
+
+            <x-admin::form.control-group>
+                <x-admin::form.control-group.label>
                     @lang('Accent gradient')
                 </x-admin::form.control-group.label>
 

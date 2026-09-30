@@ -261,6 +261,17 @@ import initPanchanga from './panchanga';
             showToast(trigger.dataset.toast);
         });
 
+        // "Join the Journey" triggers (header, footer, content pages) sit
+        // outside any Livewire component, so a wire:click on them never fires.
+        // Ask the component to open over the global event bus instead.
+        document.addEventListener('click', (event) => {
+            const trigger = event.target.closest('[data-open-journey]');
+            if (!trigger) return;
+
+            event.preventDefault();
+            window.Livewire?.dispatch('open-journey');
+        });
+
         // Escape closes the lightbox and asks the Livewire overlays to close.
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;

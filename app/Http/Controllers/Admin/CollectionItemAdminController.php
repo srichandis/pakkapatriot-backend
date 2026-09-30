@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\CollectionController;
 use App\Models\CollectionItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Webkul\Admin\Http\Controllers\Controller;
 
 abstract class CollectionItemAdminController extends Controller
@@ -103,6 +105,7 @@ abstract class CollectionItemAdminController extends Controller
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
             'icon' => $validated['icon'] ?? null,
+            'image' => $this->resolveImage($request),
             'accent' => $validated['accent'] ?? null,
             'soft_accent' => $validated['soft_accent'] ?? null,
             'icon_color' => $validated['icon_color'] ?? null,
@@ -157,6 +160,7 @@ abstract class CollectionItemAdminController extends Controller
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
             'icon' => $validated['icon'] ?? null,
+            'image' => $this->resolveImage($request, $item),
             'accent' => $validated['accent'] ?? null,
             'soft_accent' => $validated['soft_accent'] ?? null,
             'icon_color' => $validated['icon_color'] ?? null,
@@ -193,7 +197,7 @@ abstract class CollectionItemAdminController extends Controller
     protected function validateItem(Request $request, ?CollectionItem $ignore = null): array
     {
         $slugRule = ['nullable', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'];
-        $slugRule[] = \Illuminate\Validation\Rule::unique('collection_items', 'slug')
+        $slugRule[] = Rule::unique('collection_items', 'slug')
             ->where('type', $this->type)
             ->ignore($ignore?->id);
 
@@ -209,6 +213,8 @@ abstract class CollectionItemAdminController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'icon' => 'nullable|max:255',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:5120',
+            'remove_image' => 'nullable|boolean',
             'accent' => 'nullable|max:255',
             'soft_accent' => 'nullable|max:255',
             'icon_color' => 'nullable|max:255',
@@ -219,6 +225,40 @@ abstract class CollectionItemAdminController extends Controller
             'core_ideas' => 'nullable',
             'legacy' => 'nullable',
         ]);
+    }
+
+    /**
+     * Store the photo sent with the form, replacing (and deleting) the previous
+     * one. Without an upload the current path is kept, unless the form asked to
+     * remove it.
+     */
+    protected function resolveImage(Request $request, ?CollectionItem $item = null): ?string
+    {
+        $current = $item?->image;
+
+        if ($request->hasFile('image')) {
+            $this->deleteImage($current);
+
+            return $request->file('image')->store('collection-items/'.$this->type, 'public');
+        }
+
+        if ($item && $request->boolean('remove_image')) {
+            $this->deleteImage($current);
+
+            return null;
+        }
+
+        return $current;
+    }
+
+    /**
+     * Delete a stored photo from the public disk.
+     */
+    protected function deleteImage(?string $path): void
+    {
+        if ($path) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     /**

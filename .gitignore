@@ -45,8 +45,11 @@ yarn-error.log
 
 # Local junk / accidental exports
 .DS_Store
+**/.DS_Store
 pp.sql
 vendor.zip
+Archive.zip
+blog-thumbnails-files.zip
 
 # Python
 __pycache__/
